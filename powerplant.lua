@@ -11,7 +11,7 @@ end
 function Powerplant:draw()
     love.graphics.push()
     love.graphics.setColor(255, 255, 0)
-    love.graphics.circle("fill", self.position.x, self.position.y, 2.0)
+    love.graphics.circle("fill", self.position.x, self.position.y, 0.5)
     love.graphics.pop()
 end
 

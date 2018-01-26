@@ -14,13 +14,8 @@ end
 
 function TerraFormer:drawBackground()
   love.graphics.push()
-    love.graphics.setBlendMode("alpha")
     love.graphics.setColor(0, 255, 0, 127)
     love.graphics.circle("fill", self.translation.x, self.translation.y, 15.0, TerraFormer.segments)
-
-    love.graphics.setBlendMode("add")
-    love.graphics.setLineWidth(4)
-    love.graphics.circle("line", self.translation.x, self.translation.y, 15.0, TerraFormer.segments)
   love.graphics.pop()
 end
 
