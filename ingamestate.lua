@@ -3,6 +3,7 @@ local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
 local EventBus = require 'EventBus'
+local Transform = require 'Transform'
 
 local InGameState = {}
 
@@ -25,11 +26,11 @@ function InGameState:draw()
     local h = love.graphics:getHeight()
     love.graphics.origin()
     -- Origin to lower-left corner
-    love.graphics.scale(1, -1)
-    love.graphics.translate(0, -h)
+    local Camera = Transform:scale(1, -1):multiply(Transform:translate(0, -h):multiply(Transform:scale(25, 25)))
 
-    -- Scale everything up
-    love.graphics.scale(25, 25)
+    love.graphics.translate(Camera.dx, Camera.dy)
+    love.graphics.scale(Camera.sx, Camera.sy)
+
 
     -- Draw simple grid
     local m=200
