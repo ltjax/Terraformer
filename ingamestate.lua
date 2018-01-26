@@ -14,8 +14,8 @@ function InGameState:init()
         end
     })
    
-    --self:insertEntity(TerraFormer:new(2, 2))
-    --self:insertEntity(Node:new(1, 1))
+    self:insertEntity(TerraFormer:new(2, 2))
+    self:insertEntity(Node:new(1, 1))
 end
 
 function InGameState:insertEntity(entity)
