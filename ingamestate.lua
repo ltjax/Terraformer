@@ -1,5 +1,7 @@
 local Entities = require 'Entities'
 local Player = require "player"
+local TerraFormer = require "terraformer"
+local Node = require "node"
 
 local InGameState = {}
 
@@ -11,6 +13,9 @@ function InGameState:init()
             love.graphics.rectangle("fill", 10, 10, 120, 80)
         end
     })
+   
+    --self:insertEntity(TerraFormer:new(2, 2))
+    --self:insertEntity(Node:new(1, 1))
 end
 
 function InGameState:insertEntity(entity)
