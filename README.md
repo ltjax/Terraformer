@@ -32,3 +32,5 @@ Can be placed on grid. All buildings can only be built on fertilized land.
 * can be placed between buildings
 * draw as juicy line
 
+## Start of the game
+* starts with one terraformer, one plant and one node and 2 powerlines connecting it
