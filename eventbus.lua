@@ -17,7 +17,7 @@ function EventBus:subscribe(type, callback)
 end
 
 function EventBus:dispatch(message)
-  for _, callback in self.listeners[message.type] do
+  for _, callback in ipairs(self.listeners[message.type]) do
     callback(message)
   end
 end

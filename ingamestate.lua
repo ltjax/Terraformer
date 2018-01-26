@@ -4,14 +4,17 @@ local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
 local EventBus = require 'EventBus'
+local Transform = require 'Transform'
 
 local InGameState = {}
 
 function InGameState:init()
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
-   
-    self:insertEntity(TerraFormer:new(2, 2))
+    self.player = Player:new(self.eventBus);
+
+    self:insertEntity(self.player)
+    self:insertEntity(TerraFormer:new(self.eventBus, 2, 2))
     self:insertEntity(Node:new(1, 1))
 end
 
@@ -23,14 +26,16 @@ function InGameState:draw()
     local w = love.graphics:getWidth()
     local h = love.graphics:getHeight()
     love.graphics.origin()
+
     -- Origin to lower-left corner
-    love.graphics.scale(1, -1)
-    love.graphics.translate(0, -h)
+    local Camera = Transform:scale(1, -1):multiply(Transform:translate(0, -h):multiply(Transform:scale(25, 25)))
+
+    love.graphics.translate(Camera.dx, Camera.dy)
+    love.graphics.scale(Camera.sx, Camera.sy)
 
     -- Scale everything up
-    love.graphics.scale(25, 25)
     love.graphics.setBlendMode("replace")
-
+    
     self.entities:callAll('drawBackground')
 
     -- Draw simple grid
@@ -58,7 +63,9 @@ end
 function InGameState:keypressed(key)
     local mousex, mousey = love.mouse.getPosition()
     local posx, posy = mousex / 25, (love.graphics:getHeight() - mousey) / 25;
-
+    posx = math.floor( posx + 0.5 )
+    posy = math.floor( posy + 0.5 )
+    
     if key == "escape" then
         love.event.quit()
     end
@@ -66,7 +73,7 @@ function InGameState:keypressed(key)
         self.entities:callAll('step')
     end
     if key == "q" then
-        self:insertEntity(TerraFormer:new(posx, posy))
+        self:insertEntity(TerraFormer:new(self.eventBus, posx, posy))
     end
     if key == "w" then
         self:insertEntity(Node:new(posx, posy))
