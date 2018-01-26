@@ -2,17 +2,13 @@ local Entities = require 'Entities'
 local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
+local EventBus = require 'EventBus'
 
 local InGameState = {}
 
 function InGameState:init()
+    self.eventBus = EventBus:new()
     self.entities = Entities:new()
-    self:insertEntity({
-        draw=function(self)
-            love.graphics.setColor(0, 100, 100)
-            love.graphics.rectangle("fill", 10, 10, 120, 80)
-        end
-    })
    
     self:insertEntity(TerraFormer:new(2, 2))
     self:insertEntity(Node:new(1, 1))
@@ -23,6 +19,25 @@ function InGameState:insertEntity(entity)
 end
 
 function InGameState:draw()
+    local w = love.graphics:getWidth()
+    local h = love.graphics:getHeight()
+    love.graphics.origin()
+    -- Origin to lower-left corner
+    love.graphics.scale(1, -1)
+    love.graphics.translate(0, -h)
+
+    -- Scale everything up
+    love.graphics.scale(25, 25)
+
+    -- Draw simple grid
+    local m=200
+    for i=0,m do
+        love.graphics.setColor(32,32,32)
+        love.graphics.setLineWidth(1 / 25)
+        love.graphics.line(i,0,i,m)
+        love.graphics.line(0,i,m,i)
+    end
+
     self.entities:callAll('draw')
     self.entities:callAll('drawBackground')
 end

@@ -8,7 +8,7 @@ end
 function Node:draw()
   local half_edge_len = Node.edge_length * 0.5;
   love.graphics.push()
-    love.graphics.setLineWidth(4)
+    love.graphics.setLineWidth(0.2)
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.rectangle(
       "line",
@@ -22,6 +22,6 @@ function Node:draw()
 end
 
 Node.energy_cost = 10
-Node.edge_length = 1.0
+Node.edge_length = 0.25
 
 return Node
