@@ -1,8 +1,10 @@
 local class = require "middleclass"
 local TerraFormer = class "TerraFormer"
+local messages = require "messages"
 
-function TerraFormer:initialize(posx, posy)
-  self.translation = {x = posx, y = posy}
+function TerraFormer:initialize(eventBus, posx, posy)
+    self.eventBus = eventBus
+    self.translation = {x = posx, y = posy}
 end
 
 function TerraFormer:draw()
@@ -22,6 +24,10 @@ function TerraFormer:drawBackground()
     love.graphics.setLineWidth(4)
     love.graphics.circle("line", self.translation.x, self.translation.y, 15.0, TerraFormer.segments)
   love.graphics.pop()
+end
+
+function TerraFormer:step()
+    self.eventBus:dispatch(messages.minerals_produced(5))
 end
 
 TerraFormer.energy_cost = 10

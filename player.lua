@@ -1,7 +1,11 @@
 local class = require "middleclass"
 local Player = class "Player"
+local messages = require "messages"
 
-function Player:initialize()
+function Player:initialize(eventBus)
+    eventBus:subscribe(messages.MINERALS_PRODUCED, function (message)
+        self.minerals = self.minerals + message.added_minerals
+    end)
     self.minerals = 50
 end
 
