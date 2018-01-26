@@ -9,7 +9,9 @@ local InGameState = {}
 function InGameState:init()
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
-   
+    self.player = Player:new();
+    
+    self:insertEntity(self.player)
     self:insertEntity(TerraFormer:new(2, 2))
     self:insertEntity(Node:new(1, 1))
 end
