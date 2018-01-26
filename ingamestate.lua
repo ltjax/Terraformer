@@ -1,3 +1,4 @@
+local Entities = require 'Entities'
 local Player = require "player"
 
 local InGameState = {}
@@ -10,7 +11,6 @@ function InGameState:init()
             love.graphics.rectangle("fill", 10, 10, 120, 80)
         end
     })
-    self.player = Player:new()
 end
 
 function InGameState:insertEntity(entity)
