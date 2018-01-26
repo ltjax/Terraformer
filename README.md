@@ -6,6 +6,8 @@ Global Game Jam 2018
 * currency is minerals
 * perspective is top-down
 * control via mouse
+* edge-pan
+
 
 ## To Build
 
@@ -15,23 +17,20 @@ Global Game Jam 2018
 * Energy-line tool is different: drag between buildings to place
 * button (LMB) on the lower right to advance by one step
 
-### Mine
-* cost 100 minerals
-* blue circle
-* produces 5 per game step
-
 ### Power-Plant
 * cost 400 minerals
 * yellow circle
-* roduces X energy per minute
+* produces 50 energy per step
 
-### Node ()
-* 20 minerals 
+### Node
+* cost 20 minerals 
 * draw small box
 
 ### Terraformer
 * cost 100 minerals
-* fertilizes surrounding within X radius
+* fertilizes surrounding within 15 radius
+* uses 10 energy per step
+* produces 5 minerals per step
 
 ### Energy-lines
 * cost 10 minerals
@@ -40,3 +39,5 @@ Global Game Jam 2018
 
 ## Start of the game
 * starts with one terraformer, one plant and one node and 2 powerlines connecting it
+
+* initial amount of 50 minerals
