@@ -4,32 +4,34 @@ local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
 local EventBus = require 'EventBus'
-local Transform = require 'Transform'
+local Camera = require 'camera'
 local Grid = require 'Grid'
 local PowerLine = require 'powerline'
 
 local InGameState = {}
 
 function InGameState:init()
-  self.eventBus = EventBus:new()
-  self.entities = Entities:new()
-  self.player = Player:new(self.eventBus);
-  self.grid = Grid:new()
+    self.eventBus = EventBus:new()
+    self.entities = Entities:new()
+    self.player = Player:new(self.eventBus);
+    self.grid = Grid:new()
+    self.camera = Camera:new();
 
-  self.drag = {
-      mode= 'off',
-  }
-  self:insertEntity(self.player)
+    self.drag = {
+        mode= 'off',
+    }
+    self:insertEntity(self.player)
+    self:insertEntity(self.camera)
 
-  local terraformer = TerraFormer:new(self.eventBus, 7, 14)
-  local node = Node:new(5, 10)
-  local powerPlant = PowerPlant:new(2, 11)
-  self:insertBuilding(terraformer)
-  self:insertBuilding(node)
-  self:insertBuilding(powerPlant)
-  
-  self:connectLine(terraformer, node)
-  self:connectLine(powerPlant, node)
+    local terraformer = TerraFormer:new(self.eventBus, 7, 14)
+    local node = Node:new(5, 10)
+    local powerPlant = PowerPlant:new(2, 11)
+    self:insertBuilding(terraformer)
+    self:insertBuilding(node)
+    self:insertBuilding(powerPlant)
+    
+    self:connectLine(terraformer, node)
+    self:connectLine(powerPlant, node)
 end
 
 function InGameState:insertEntity(entity)
@@ -42,15 +44,8 @@ function InGameState:insertBuilding(building)
 end
 
 function InGameState:draw()
-    local w = love.graphics:getWidth()
     local h = love.graphics:getHeight()
-    love.graphics.origin()
-
-    -- Origin to lower-left corner
-    local Camera = Transform:scale(1, -1):multiply(Transform:translate(0, -h):multiply(Transform:scale(25, 25)))
-
-    love.graphics.translate(Camera.dx, Camera.dy)
-    love.graphics.scale(Camera.sx, Camera.sy)
+    self.camera:setup()
 
     -- Scale everything up
     love.graphics.setBlendMode("replace")
@@ -130,9 +125,9 @@ end
 
 function InGameState:mouseGridPosition()
     local mousex, mousey = love.mouse.getPosition()
-    local posx, posy = mousex / 25, (love.graphics:getHeight() - mousey) / 25;
-    posx = math.floor( posx + 0.5 )
-    posy = math.floor( posy + 0.5 )
+    local posx, posy = mousex / self.camera.zoom, (love.graphics:getHeight() - mousey) / self.camera.zoom;
+    posx = math.floor( posx + 0.5 + self.camera.position.x)
+    posy = math.floor( posy + 0.5 + self.camera.position.y)
     return posx, posy
 end
 
@@ -156,6 +151,10 @@ function InGameState:keypressed(key)
   end
 
   self:insertBuilding(building)
+end
+
+function InGameState:wheelmoved(x, y)
+    self.camera:wheelmoved(x, y)
 end
 
 return InGameState
