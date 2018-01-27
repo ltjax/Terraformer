@@ -17,6 +17,7 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.energy = 0
     self.active = false
     self.generated = 0
+    self.active_radius = 15.0
 end
 
 function TerraFormer:draw(camera)
@@ -34,7 +35,7 @@ function TerraFormer:drawBackground()
 
     love.graphics.push()
         love.graphics.setColor(0, 255, 0, 50)
-        love.graphics.circle("fill", self.position.x, self.position.y, 15.0, TerraFormer.segments)
+        love.graphics.circle("fill", self.position.x, self.position.y, self.active_radius, TerraFormer.segments)
     love.graphics.pop()
 end
 

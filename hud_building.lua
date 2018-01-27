@@ -48,7 +48,7 @@ end
 function HudBuilding:draw_placement()
     local x, y = self.ingamestate:mouseGridPosition()
     love.graphics.push()
-    if self.ingamestate.grid:get(x, y) ~= nil or not self.ingamestate.player:has_minerals(self.placement.mineral_cost) then
+    if not self.ingamestate:canBuild(x, y) or not self.ingamestate.player:has_minerals(self.placement.mineral_cost) then
         love.graphics.setColor(128, 0, 0)
     else
         love.graphics.setColor(0, 128, 0)
