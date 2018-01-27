@@ -14,9 +14,8 @@ TerraFormer.static.shield_radius_min = 2
 TerraFormer.static.shield_radius_max = 8
 TerraFormer.static.image = love.graphics.newImage('terraformer.png')
 
-function TerraFormer:initialize(eventBus, posx, posy)
+function TerraFormer:initialize(_, posx, posy)
     EnergyTransmitter.initialize(self)
-    self.eventBus = eventBus
     self.position = {x = posx, y = posy }
     self.energy = 0
     self.active = false
@@ -55,18 +54,12 @@ function TerraFormer:update(dt)
     if self.energy > usage then
         self.energy = self.energy - usage
         self.active = true
-        self.generated = self.generated + dt
         self.active_radius = math.min(TerraFormer.shield_radius_max, self.active_radius + TerraFormer.shield_radius_increase * dt)
     else
         self.active_radius = math.max(TerraFormer.shield_radius_min, self.active_radius - TerraFormer.shield_radius_increase * dt)
         if self.active_radius <= TerraFormer.shield_radius_min then
             self.active = false
         end
-    end
-    
-    while self.generated > 1 do
-        self.generated = self.generated - 1
-        self.eventBus:dispatch(messages.minerals_produced(5))
     end
 end
 

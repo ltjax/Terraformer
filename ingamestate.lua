@@ -3,6 +3,7 @@ local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
+local Mine = require "mine"
 local EventBus = require 'EventBus'
 local Camera = require 'camera'
 local Grid = require 'Grid'
@@ -29,15 +30,18 @@ function InGameState:init()
     self:insertEntity(self.camera)
     self:insertEntity(self.hud_building)
 
-    local terraformer = TerraFormer:new(self.eventBus, 7, 14)
+    local terraformer = TerraFormer:new(nil, 7, 14)
     local node = Node:new(nil, 5, 10)
     local powerPlant = PowerPlant:new(nil, 2, 11)
+    local mine = Mine:new(self.eventBus, 6, 7)
     self:insertBuilding(terraformer)
     self:insertBuilding(node)
     self:insertBuilding(powerPlant)
+    self:insertBuilding(mine)
     
     self:connectLine(terraformer, node)
     self:connectLine(powerPlant, node)
+    self:connectLine(mine, node)
 end
 
 function InGameState:insertEntity(entity)
