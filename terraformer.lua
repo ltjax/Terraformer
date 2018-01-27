@@ -4,20 +4,20 @@ local messages = require "messages"
 
 function TerraFormer:initialize(eventBus, posx, posy)
     self.eventBus = eventBus
-    self.translation = {x = posx, y = posy}
+    self.position = {x = posx, y = posy}
 end
 
 function TerraFormer:draw()
   love.graphics.push()
     love.graphics.setColor(0, 255, 0, 255)
-    love.graphics.circle("fill", self.translation.x, self.translation.y, 0.5)
+    love.graphics.circle("fill", self.position.x, self.position.y, 0.5)
   love.graphics.pop();
 end
 
 function TerraFormer:drawBackground()
   love.graphics.push()
     love.graphics.setColor(0, 255, 0, 127)
-    love.graphics.circle("fill", self.translation.x, self.translation.y, 15.0, TerraFormer.segments)
+    love.graphics.circle("fill", self.position.x, self.position.y, 15.0, TerraFormer.segments)
   love.graphics.pop()
 end
 

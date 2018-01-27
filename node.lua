@@ -2,7 +2,7 @@ local class = require "middleclass"
 local Node = class "Node"
 
 function Node:initialize(posx, posy)
-  self.translation = {x = posx, y = posy}
+  self.position = {x = posx, y = posy}
 end
 
 function Node:draw()
@@ -12,8 +12,8 @@ function Node:draw()
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.rectangle(
       "line",
-      self.translation.x - half_edge_len,
-      self.translation.y - half_edge_len,
+      self.position.x - half_edge_len,
+      self.position.y - half_edge_len,
       self.edge_length,
       self.edge_length
     )

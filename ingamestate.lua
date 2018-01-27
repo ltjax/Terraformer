@@ -6,6 +6,7 @@ local PowerPlant = require "powerplant"
 local EventBus = require 'EventBus'
 local Transform = require 'Transform'
 local Grid = require 'Grid'
+local PowerLine = require 'powerline'
 
 local InGameState = {}
 
@@ -72,7 +73,7 @@ function InGameState:draw()
 end
 
 function InGameState:update(dt)
-    self.entities:callAll('update')
+    self.entities:callAll('update', dt)
 end
 
 function InGameState:newBuildingFor(key, posx, posy)
@@ -105,10 +106,19 @@ end
 
 function InGameState:mousereleased()
     local x, y = self:mouseGridPosition()
-    if self.drag.mode == 'line' and self.grid:get(x, y)~=nil then
-        self.drag.stop = {x=x, y=y}
+    local endTarget = self.grid:get(x, y)
+    if self.drag.mode == 'line' then
+        if endTarget~=nil then
+            local startTarget = self.grid:get(self.drag.start.x, self.drag.start.y)
+            self:connectLine(startTarget, endTarget)
+        end
+        self.drag.start = nil
         self.drag.mode = 'off'
     end
+end
+
+function InGameState:connectLine(startTarget, endTarget)
+    self:insertEntity(PowerLine:new(startTarget, endTarget))
 end
 
 function InGameState:mouseGridPosition()

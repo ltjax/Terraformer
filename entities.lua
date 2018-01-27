@@ -10,11 +10,11 @@ function Entities:add(entity)
   table.insert(self.list, entity)
 end
 
-function Entities:callAll(functionName)
+function Entities:callAll(functionName, ...)
   for _, entity in ipairs(self.list) do
     local f = entity[functionName]
     if f~=nil then
-      f(entity)
+      f(entity, unpack(arg))
     end
   end
 end
