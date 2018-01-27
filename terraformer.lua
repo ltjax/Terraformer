@@ -11,7 +11,8 @@ TerraFormer.static.segments = 100
 TerraFormer.static.mineral_cost = 100
 TerraFormer.static.shield_radius_increase = 0.5 -- per second
 TerraFormer.static.shield_radius_min = 2
-TerraFormer.static.shield_radius_max = 15
+TerraFormer.static.shield_radius_max = 8
+TerraFormer.static.image = love.graphics.newImage('terraformer.png')
 
 function TerraFormer:initialize(eventBus, posx, posy)
     EnergyTransmitter.initialize(self)
@@ -23,10 +24,11 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.active_radius = TerraFormer.shield_radius_min
 end
 
-function TerraFormer:draw(camera)
+function TerraFormer:drawOverlay(camera)
   love.graphics.push()
-    love.graphics.setColor(0, 255, 0, 255)
-    love.graphics.circle("fill", self.position.x, self.position.y, 0.5)
+    love.graphics.setColor(180, 255, 180, 255)
+    love.graphics.setBlendMode('alpha')
+    drawCentered(TerraFormer.image, self.position.x, self.position.y)
     if self.active and self.active_radius < TerraFormer.shield_radius_max then
         love.graphics.setLineWidth(0.05);
         love.graphics.setColor(0, 255, 0, 150)

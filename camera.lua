@@ -4,7 +4,7 @@ local Transform = require "Transform"
 local mathhelpers = require "mathhelpers"
 
 function Camera:initialize()
-    self.zoom = 25
+    self.zoom = 50
     self.position = {x = 0, y = 0}
     self.shakestart = 0
     self.trauma = 0

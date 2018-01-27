@@ -1,6 +1,10 @@
 local class = require "middleclass"
 local Gamestate = require "gamestate"
 
+function drawCentered(image, x, y)
+    love.graphics.draw(image, x, y, 0, 1/image:getWidth(), -1/image:getHeight(), image:getWidth()/2, image:getHeight()/2)
+end
+
 function love.load(arg)
 
     -- Enable debugging

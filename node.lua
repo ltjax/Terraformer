@@ -9,6 +9,7 @@ Node.static.max_energy_output = 20
 Node.static.energy_cost = 10
 Node.static.edge_length = 0.25
 Node.static.mineral_cost = 20
+Node.static.image = love.graphics.newImage('node.png')
 
 function Node:initialize(_, posx, posy)
     EnergyTransmitter.initialize(self)
@@ -17,22 +18,15 @@ function Node:initialize(_, posx, posy)
     self.average_potential = 0
 end
 
-function Node:draw(camera)
+function Node:drawOverlay(camera)
   local half_edge_len = Node.edge_length * 0.5;
   local p = self:potential()
   love.graphics.push()
     love.graphics.setLineWidth(0.2)
-    love.graphics.setColor(255*p, 255*p, 0, 255)
-    love.graphics.rectangle(
-      "line",
-      self.position.x - half_edge_len,
-      self.position.y - half_edge_len,
-      Node.edge_length,
-      Node.edge_length
-    )
-
+    love.graphics.setColor(100*p+150,100*p+150, 150, 255)
+    love.graphics.setBlendMode('alpha')
+    drawCentered(Node.image, self.position.x, self.position.y)
   love.graphics.pop();
-  --camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
 function Node:update(dt)

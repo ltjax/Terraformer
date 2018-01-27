@@ -104,13 +104,13 @@ function InGameState:draw()
     self:drawBackgroundTiles()    
 
     -- Draw simple grid
-    love.graphics.setBlendMode("alpha")
     local b0, b1 = self.camera:boundingBox()
     b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
+    love.graphics.setBlendMode("alpha")
     local m=200
     for i=b0.x,b1.x do
         for j=b0.y,b1.y do
-            love.graphics.setColor(32,32,32, 64)
+            love.graphics.setColor(32,32,32, 4)
             love.graphics.setLineWidth(1 / 25)
             love.graphics.line(i,b0.y,i,b1.y+1)
             love.graphics.line(b0.x,j,b1.x+1,j)
@@ -118,6 +118,7 @@ function InGameState:draw()
     end
     
     self.entities:callAll('draw', self.camera)
+    self.entities:callAll('drawOverlay', self.camera)
     self.camera:drawTop()
 
     if self.drag.start and self.drag.stop then
