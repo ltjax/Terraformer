@@ -1,5 +1,5 @@
 local class = require "middleclass"
-local Powerplant = class "Player"
+local Powerplant = class "Powerplant"
 
 Powerplant.mineral_cost = 400
 Powerplant.energy_produced_per_step = 50
