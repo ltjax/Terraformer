@@ -22,6 +22,10 @@ function drawEnergyBar(x, y, percentage, critical)
 
 end
 
+function clamp(low, n, high)
+    return math.min(math.max(low, n), high)
+end
+
 function love.load(arg)
 
     -- Enable debugging

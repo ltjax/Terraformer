@@ -4,7 +4,8 @@ local Transform = require "transform"
 local mathhelpers = require "mathhelpers"
 
 function Camera:initialize()
-    self.zoom = 50
+    self.gridPerHeight = 12
+    self.zoom = love.graphics.getHeight() / self.gridPerHeight
     self.position = {x = 0, y = 0}
     self.shakestart = 0
     self.trauma = 0
@@ -48,6 +49,7 @@ function Camera:update()
     local dt = love.timer.getDelta()
     local w = love.graphics:getWidth()
     local h = love.graphics:getHeight()
+    self.zoom = love.graphics.getHeight() / self.gridPerHeight
     local mousex, mousey = love.mouse.getPosition()
     local BORDER = 50
     local MOVE_SPEED = 8.0
@@ -97,17 +99,8 @@ function Camera:boundingBox()
 end
 
 function Camera:wheelmoved(_, y)
-    self.zoom = self.zoom + y
-    if self.zoom < 5 then
-        self.zoom = 5
-    end
-    if self.zoom > 75 then
-        self.zoom = 75
-    end
-end
-
-function clamp(low, n, high)
-    return math.min(math.max(low, n), high)
+    self.gridPerHeight = clamp(8, self.gridPerHeight +- y, 30)
+    self.zoom = love.graphics.getHeight() / self.gridPerHeight
 end
 
 function Camera:addTrauma(v)
