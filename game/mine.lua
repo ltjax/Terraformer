@@ -5,8 +5,8 @@ local EnergyTransmitter = require "energytransmitter"
 local Mine = class("Mine", EnergyTransmitter)
 local messages = require "messages"
 
-Mine.static.max_energy = 40
-Mine.static.energy_cost = 0.4 -- per second
+Mine.static.energy_cost = 0.9 -- per second
+Mine.static.max_energy = Mine.energy_cost * 5
 Mine.static.mineral_cost = 600
 Mine.static.produce_speed = 2 -- per second
 Mine.static.mine_pack = 5
@@ -23,19 +23,18 @@ end
 
 function Mine:drawOverlay(camera)
     love.graphics.push()
-    love.graphics.setColor(193, 43, 5, 255)
+    love.graphics.setColor(193, 70, 30, 255)
     love.graphics.setBlendMode('alpha')
     drawCentered(Mine.image, self.position.x, self.position.y)
+    
+    drawEnergyBar(self.position.x, self.position.y, self.energy / Mine.max_energy, Mine.energy_cost / Mine.max_energy)
     love.graphics.pop()
 end
 
 function Mine:update(dt)
     local usage = dt * Mine.energy_cost
     if self.energy > usage then
-        if self.energy > 0.75 * Mine.max_energy then
-            self.energy = self.energy - 4 * usage
-            self.generated = self.generated + dt * 4 * Mine.produce_speed
-        elseif self.energy > 0.25 * Mine.max_energy then
+        if self.energy > 0.25 * Mine.max_energy then
             self.energy = self.energy - usage
             self.generated = self.generated + dt * Mine.produce_speed
         else

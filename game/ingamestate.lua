@@ -53,7 +53,7 @@ function InGameState:init()
     self:insertEntity(self.camera)
     self:insertEntity(self.hud_building)
 
-    local terraformer = TerraFormer:new(nil, 7, 14)
+    local terraformer = TerraFormer:new(self.eventBus, 7, 14)
     terraformer.energy = 5
     terraformer.active_radius = TerraFormer.shield_radius_max
     self.terraformedGrid:radiusChanged(terraformer)
