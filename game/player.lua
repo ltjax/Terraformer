@@ -35,7 +35,7 @@ function Player:draw()
     local x = love.graphics.getWidth() - 200
     love.graphics.print(tostring(self.score), x, 10, 0, t, t)
     love.graphics.setFont(constants.NORMAL_FONT)
-    love.graphics.print("Score", x, 40)
+    love.graphics.print("Hectare", x, 40)
     love.graphics.pop()
 end
 
