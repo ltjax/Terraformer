@@ -5,12 +5,6 @@ local Powerline = class "Powerline"
 
 Powerline.static.max_energy = 40
 
-function magnitude(a, b)
-    local dx = b.x - a.x
-    local dy = b.y - a.y
-    return math.sqrt(dx*dx + dy*dy)
-end
-
 function Powerline:initialize(startBuilding, endBuilding)
     self.time = 0
     self.a = startBuilding
@@ -19,7 +13,7 @@ function Powerline:initialize(startBuilding, endBuilding)
     self.b = endBuilding
     self.b:connect(self)
     self.toB = {}
-    self.length = magnitude(self.a.position, self.b.position)
+    self.length = mathhelpers.magnitude(self.a.position, self.b.position)
     self.image = love.graphics.newImage('particle.png')
 end
 
@@ -43,6 +37,7 @@ function Powerline:draw(camera)
     local p1 = self.b.position
     love.graphics.push()
     love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
+    love.graphics.setLineWidth(1/25)
     love.graphics.line(p0.x, p0.y, p1.x, p1.y)
     
     love.graphics.setBlendMode("add")

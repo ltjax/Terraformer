@@ -41,3 +41,7 @@ Global Game Jam 2018
 * starts with one terraformer, one plant and one node and 2 powerlines connecting it
 
 * initial amount of 50 minerals
+
+# Sources
+https://opengameart.org/content/grass-texture
+https://opengameart.org/content/generic-tileable-sand-texture

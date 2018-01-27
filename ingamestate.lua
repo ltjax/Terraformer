@@ -8,6 +8,7 @@ local Camera = require 'camera'
 local Grid = require 'Grid'
 local PowerLine = require 'powerline'
 local HudBuilding = require 'hud_building'
+local mathhelpers = require 'mathhelpers'
 
 local InGameState = {}
 
@@ -103,6 +104,11 @@ function InGameState:mousepressed(x, y, button)
     if self.hud_building:mousepressed(x, y, button) then
         return
     end
+    
+    if button ~= 1 then
+        return
+    end
+    
     local x, y = self:mouseGridPosition()
     if self.grid:get(x, y)~=nil then
         self.drag.start = {x=x, y=y}
@@ -110,17 +116,30 @@ function InGameState:mousepressed(x, y, button)
     end
 end
 
+function InGameState:dragTarget()
+    local x, y = self:unroundedMousePosition()
+    local d = mathhelpers.difference(self.drag.start, {x=x, y=y})
+    local max_length = 7
+    local length = mathhelpers.length(d)
+    if length > max_length then
+        d = mathhelpers.scale(d, max_length/length)
+    end
+    local e = mathhelpers.add(d, self.drag.start)
+    return self:roundPosition(e.x, e.y)
+end
+
+
 function InGameState:mousemoved()
     if self.drag.mode == 'line' then
-        local x, y = self:mouseGridPosition()
-        self.drag.stop = {x=x, y=y }
+        local x, y = self:dragTarget()
+        self.drag.stop = {x=x, y=y}
     end
 end
 
 function InGameState:mousereleased()
-    local x, y = self:mouseGridPosition()
-    local endTarget = self.grid:get(x, y)
     if self.drag.mode == 'line' then
+        local x, y = self:dragTarget()
+        local endTarget = self.grid:get(x, y)
         if endTarget~=nil then
             local startTarget = self.grid:get(self.drag.start.x, self.drag.start.y)
             self:connectLine(startTarget, endTarget)
@@ -134,12 +153,20 @@ function InGameState:connectLine(startTarget, endTarget)
     self:insertEntity(PowerLine:new(startTarget, endTarget))
 end
 
-function InGameState:mouseGridPosition()
+function InGameState:unroundedMousePosition()
     local mousex, mousey = love.mouse.getPosition()
     local posx, posy = mousex / self.camera.zoom, (love.graphics:getHeight() - mousey) / self.camera.zoom;
-    posx = math.floor( posx + 0.5 + self.camera.position.x)
-    posy = math.floor( posy + 0.5 + self.camera.position.y)
+    return posx + self.camera.position.x, posy + self.camera.position.y
+end
+
+function InGameState:roundPosition(x, y)
+    local posx = math.floor( x + 0.5 )
+    local posy = math.floor( y + 0.5 )
     return posx, posy
+end
+
+function InGameState:mouseGridPosition()
+    return self:roundPosition(self:unroundedMousePosition())
 end
 
 function InGameState:keypressed(key)
