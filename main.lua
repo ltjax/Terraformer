@@ -10,7 +10,7 @@ function love.load(arg)
 
     -- Start the gamestate manager and move to the logo state
     local events = {'draw', 'errhand', 'focus', 'keypressed', 'keyreleased', 'mousefocus',
-        'mousepressed', 'mousereleased', 'mousemoved', 'quit', 'resize', 'textinput',
+        'mousepressed', 'mousereleased', 'mousemoved', 'wheelmoved', 'quit', 'resize', 'textinput',
         'threaderror', 'update', 'visible', 'gamepadaxis', 'gamepadpressed',
         'gamepadreleased', 'joystickadded', 'joystickaxis', 'joystickhat',
         'joystickpressed', 'joystickreleased', 'joystickremoved' }

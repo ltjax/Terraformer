@@ -26,7 +26,6 @@ function InGameState:init()
     self:insertEntity(self.camera)
 
     -- start entities
-
     local terraformer = TerraFormer:new(self.eventBus, 2, 2)
     self:insertEntity(terraformer)
     self.grid:set(2, 2, terraformer)
@@ -122,9 +121,9 @@ end
 
 function InGameState:mouseGridPosition()
     local mousex, mousey = love.mouse.getPosition()
-    local posx, posy = mousex / 25, (love.graphics:getHeight() - mousey) / 25;
-    posx = math.floor( posx + 0.5 )
-    posy = math.floor( posy + 0.5 )
+    local posx, posy = mousex / self.camera.zoom, (love.graphics:getHeight() - mousey) / self.camera.zoom;
+    posx = math.floor( posx + 0.5 + self.camera.position.x)
+    posy = math.floor( posy + 0.5 + self.camera.position.y)
     return posx, posy
 end
 
@@ -149,6 +148,10 @@ function InGameState:keypressed(key)
 
     self:insertEntity(building)
     self.grid:set(posx, posy, building)
+end
+
+function InGameState:wheelmoved(x, y)
+    self.camera:wheelmoved(x, y)
 end
 
 return InGameState

@@ -26,8 +26,9 @@ function Camera:update()
     local h = love.graphics:getHeight()
     local mousex, mousey = love.mouse.getPosition()
     local BORDER = 50
-    local MOVE_SPEED = 4.0
-    local move_diff = MOVE_SPEED * dt
+    local MOVE_SPEED = 8.0
+    local move_diff = MOVE_SPEED * dt  * 25 / self.zoom
+    self.speed = move_diff /dt
 
     if mousex < 0 or mousey < 0 or mousex > w or mousey > h then
         -- outside of window
@@ -47,6 +48,24 @@ function Camera:update()
     end
     if mousey > h - BORDER then
         self.position.y = self.position.y - move_diff
+    end
+end
+
+function Camera:draw()
+    love.graphics.push()
+    love.graphics.origin()
+    love.graphics.setColor(255, 0, 255)
+    love.graphics.print("movespeed: " .. tostring(self.speed), 100, 0)
+    love.graphics.pop()
+end
+
+function Camera:wheelmoved(_, y)
+    self.zoom = self.zoom + y
+    if self.zoom < 5 then
+        self.zoom = 5
+    end
+    if self.zoom > 75 then
+        self.zoom = 75
     end
 end
 
