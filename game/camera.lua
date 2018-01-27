@@ -1,6 +1,6 @@
 local class = require "middleclass"
 local Camera = class "Camera"
-local Transform = require "Transform"
+local Transform = require "transform"
 local mathhelpers = require "mathhelpers"
 
 function Camera:initialize()

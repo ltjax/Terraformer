@@ -1,12 +1,12 @@
-local Entities = require 'Entities'
+local Entities = require 'entities'
 local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
 local Mine = require "mine"
-local EventBus = require 'EventBus'
+local EventBus = require 'eventbus'
 local Camera = require 'camera'
-local Grid = require 'Grid'
+local Grid = require 'grid'
 local PowerLine = require 'powerline'
 local HudBuilding = require 'hud_building'
 local mathhelpers = require 'mathhelpers'
