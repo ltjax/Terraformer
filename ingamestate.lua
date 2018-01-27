@@ -20,6 +20,7 @@ function InGameState:init()
     self.camera = Camera:new();
     self.hud_building = HudBuilding:new(self)
     self.accumulated = 0.0
+    self.background = love.graphics.newImage('background.png')
 
     self.drag = {
         mode= 'off',
@@ -58,6 +59,18 @@ function InGameState:createBuilding(building_class, x, y)
     return nil
 end
 
+function InGameState:drawBackgroundTiles()
+    love.graphics.setBlendMode("alpha")
+    love.graphics.setColor(255, 255, 255, 200)
+    local tileSize = 50
+    for by=-1,0 do
+        for bx=-1,0 do
+            love.graphics.draw(self.background, bx*tileSize, by*tileSize, 0,tileSize/self.background:getWidth(), tileSize/self.background:getHeight())
+        end
+    end
+end
+
+
 function InGameState:draw()
     local h = love.graphics:getHeight()
     self.camera:setup()
@@ -66,6 +79,8 @@ function InGameState:draw()
     love.graphics.setBlendMode("replace")
     
     self.entities:callAll('drawBackground')
+    
+    self:drawBackgroundTiles()    
 
     -- Draw simple grid
     love.graphics.setBlendMode("alpha")

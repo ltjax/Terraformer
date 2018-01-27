@@ -82,6 +82,7 @@ function Camera:drawTop()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setColor(255, 0, 255)
+    love.graphics.setBlendMode("alpha")
     for _, v in pairs(self.texts) do
         love.graphics.print(unpack(v))
     end
