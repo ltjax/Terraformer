@@ -50,6 +50,7 @@ function InGameState:createBuilding(building_class, x, y)
     if self.grid:get(x, y) == nil and self.player:use_minerals(building_class.mineral_cost) then
         local building = building_class:new(self.eventBus, x, y)
         self:insertBuilding(building)
+        self.camera:addTrauma(0.2)
         return building
     end
     return nil

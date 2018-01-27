@@ -5,6 +5,8 @@ local Transform = require "Transform"
 function Camera:initialize()
     self.zoom = 25
     self.position = {x = 0, y = 0}
+    self.shakestart = 0
+    self.trauma = 0
 end
 
 function Camera:setup()
@@ -16,7 +18,27 @@ function Camera:setup()
         Transform:scale(1, -1):multiply(Transform:translate(0, -h):multiply(Transform:scale(self.zoom, self.zoom)))
     transform = transform:multiply(Transform:translate(-self.position.x, -self.position.y))
 
-    love.graphics.translate(transform.dx, transform.dy)
+    local shakex = 0
+    local shakey = 0
+    if self.trauma > 0 then
+        local shake = self.trauma * self.trauma
+        local max_angle = math.rad(10)
+        local max_offset = 50 *self.zoom / 25
+        local SEED = 123
+        local time = self.shakestart * 5
+        local angle = max_angle * shake * (love.math.noise(SEED, time) * 2 - 1)
+        shakex = max_offset * shake * (love.math.noise(SEED + 1, time) * 2 - 1)
+        shakey = max_offset * shake * (love.math.noise(SEED + 2, time) * 2 - 1)
+
+        local width = love.graphics.getWidth()
+        local height = love.graphics.getHeight()
+        -- rotate around the center of the screen by angle radians
+        love.graphics.translate(width/2, height/2)
+        love.graphics.rotate(angle)
+        love.graphics.translate(-width/2, -height/2)
+    end
+
+    love.graphics.translate(transform.dx + shakex, transform.dy + shakey)
     love.graphics.scale(transform.sx, transform.sy)
 end
 
@@ -29,6 +51,10 @@ function Camera:update()
     local MOVE_SPEED = 8.0
     local move_diff = MOVE_SPEED * dt  * 25 / self.zoom
     self.speed = move_diff /dt
+    if self.trauma > 0 then
+        self.trauma = math.max(0, self.trauma - dt * 0.5)
+        self.shakestart = self.shakestart + dt
+    end
 
     if mousex < 0 or mousey < 0 or mousex > w or mousey > h then
         -- outside of window
@@ -67,6 +93,17 @@ function Camera:wheelmoved(_, y)
     if self.zoom > 75 then
         self.zoom = 75
     end
+end
+
+function clamp(low, n, high)
+    return math.min(math.max(low, n), high)
+end
+
+function Camera:addTrauma(v)
+    if self.trauma == 0 then
+        self.shakestart = 0
+    end
+    self.trauma = clamp(0, self.trauma + v, 1)
 end
 
 return Camera
