@@ -5,7 +5,7 @@ local EnergyTransmitter = require 'EnergyTransmitter'
 local Node = class("Node", EnergyTransmitter)
 
 Node.static.max_energy_storage = 50
-Node.static.max_energy_output = 25
+Node.static.max_energy_output = 20
 Node.static.energy_cost = 10
 Node.static.edge_length = 0.25
 Node.static.mineral_cost = 20
@@ -18,9 +18,10 @@ end
 
 function Node:draw(camera)
   local half_edge_len = Node.edge_length * 0.5;
+  local p = self:potential()
   love.graphics.push()
     love.graphics.setLineWidth(0.2)
-    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.setColor(255*p, 255*p, 0, 255)
     love.graphics.rectangle(
       "line",
       self.position.x - half_edge_len,
@@ -33,12 +34,12 @@ function Node:draw(camera)
   camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
-function Node:receive(energy)
-    self.energy = math.min(Node.max_energy_storage, energy)
+function Node:receive()
+    self.energy = math.min(Node.max_energy_storage, self.energy+1)
 end
 
-function Node:take(energy)
-    self.energy = math.max(self.energy - energy, 0.0)
+function Node:take()
+    self.energy = math.max(self.energy - 1, 0)
 end
 
 function Node:output()

@@ -9,10 +9,10 @@ function EnergyTransmitter:output()
     return 0
 end
 
-function EnergyTransmitter:receive(energy)
+function EnergyTransmitter:receive()
 end
 
-function EnergyTransmitter:take(energy)
+function EnergyTransmitter:take()
 end
 
 function EnergyTransmitter:potential()
@@ -20,6 +20,11 @@ function EnergyTransmitter:potential()
 end
 
 function EnergyTransmitter:step()
+    local output = self:output()
+    if output <= 0 then
+        return
+    end
+    
     local lower = {}
     for _, connection in ipairs(self.connections) do
         if connection:doesTransmitFrom(self) then
@@ -31,10 +36,19 @@ function EnergyTransmitter:step()
         return
     end
 
-    local powerPerConnection = self:output() / #lower
-    for _, connection in ipairs(lower) do
-        connection:transmitFrom(self, powerPerConnection)
+    table.sort(lower, function(a, b) return a:otherFor(self):potential() < b:otherFor(self):potential() end)
+    
+    while output > 0 do
+        for _, connection in ipairs(lower) do
+            -- put one energy quant on the line
+            connection:transmitFrom(self)
+            output = output - 1
+            if output <= 0 then
+                break
+            end
+        end
     end
+    
 end
 
 function EnergyTransmitter:connect(powerLine)

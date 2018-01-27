@@ -18,6 +18,7 @@ function InGameState:init()
     self.grid = Grid:new()
     self.camera = Camera:new();
     self.hud_building = HudBuilding:new(self)
+    self.accumulated = 0.0
 
     self.drag = {
         mode= 'off',
@@ -89,7 +90,13 @@ function InGameState:draw()
 end
 
 function InGameState:update(dt)
+    local frameTime = 1/30
     self.entities:callAll('update', dt)
+    self.accumulated = self.accumulated + dt
+    while self.accumulated > frameTime do
+        self.accumulated = self.accumulated - frameTime
+        self.entities:callAll('step', frameTime)
+    end
 end
 
 function InGameState:mousepressed(x, y, button)

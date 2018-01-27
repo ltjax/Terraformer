@@ -11,6 +11,7 @@ function Powerplant:initialize(_, x, y)
     EnergyTransmitter.initialize(self)
     self.position = {x = x, y = y}
     self.connections = {}
+    self.energyAccumulation = 0
 end
 
 function Powerplant:draw(camera)
@@ -21,12 +22,21 @@ function Powerplant:draw(camera)
     camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
+function Powerplant:update(dt)
+    self.energyAccumulation = self.energyAccumulation + dt
+end
+
 function Powerplant:potential()
     return 1
 end
 
 function Powerplant:output()
-    return Powerplant.energy_produced_per_step
+    local integral, fractional = math.modf(self.energyAccumulation)
+    return integral
+end
+
+function Powerplant:take()
+    self.energyAccumulation = self.energyAccumulation -1
 end
 
 return Powerplant

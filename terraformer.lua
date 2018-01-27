@@ -5,7 +5,7 @@ local EnergyTransmitter = require 'energytransmitter'
 local TerraFormer = class("TerraFormer", EnergyTransmitter)
 local messages = require "messages"
 
-TerraFormer.static.max_energy = 30
+TerraFormer.static.max_energy = 40
 TerraFormer.static.energy_cost = 10
 TerraFormer.static.segments = 100
 TerraFormer.static.mineral_cost = 100
@@ -32,7 +32,7 @@ function TerraFormer:drawBackground()
     end
 
     love.graphics.push()
-        love.graphics.setColor(0, 255, 0, 127)
+        love.graphics.setColor(0, 255, 0, 50)
         love.graphics.circle("fill", self.position.x, self.position.y, 15.0, TerraFormer.segments)
     love.graphics.pop()
 end
@@ -47,8 +47,8 @@ function TerraFormer:step()
     end
 end
 
-function TerraFormer:receive(energy)
-    self.energy = math.min(self.energy + energy, TerraFormer.max_energy)
+function TerraFormer:receive()
+    self.energy = math.min(self.energy + 1, TerraFormer.max_energy)
 end
 
 function TerraFormer:potential()
