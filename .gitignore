@@ -44,3 +44,6 @@ luac.out
 
 # IntelliJ
 .idea/workspace.xml
+
+# Reaper
+*.reapeaks
