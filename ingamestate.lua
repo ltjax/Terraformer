@@ -50,7 +50,7 @@ function InGameState:insertBuilding(building)
 end
 
 function InGameState:createBuilding(building_class, x, y)
-    if self.grid:get(x, y) == nil and self.player:use_minerals(building_class.mineral_cost) then
+    if self:canBuild(x, y) and self.player:use_minerals(building_class.mineral_cost) then
         local building = building_class:new(self.eventBus, x, y)
         self:insertBuilding(building)
         self.camera:addTrauma(0.2)
@@ -70,6 +70,27 @@ function InGameState:drawBackgroundTiles()
     end
 end
 
+function InGameState:canBuild(x, y)
+    if self.grid:get(x, y) ~= nil then
+        return false
+    end
+    if not self:terraformed(x, y) then
+        return false
+    end
+    return true
+end
+
+function InGameState:terraformed(x, y)
+    for _, v in pairs(self.entities.list) do
+        if v:isInstanceOf(TerraFormer) then
+            local dist = mathhelpers.distance(v.position, {x=x, y=y})
+            if dist <= v.active_radius then
+                return true
+            end
+        end
+    end
+    return false
+end
 
 function InGameState:draw()
     local h = love.graphics:getHeight()
