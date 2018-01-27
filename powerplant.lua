@@ -1,11 +1,15 @@
 local class = require "middleclass"
-local Powerplant = class "Powerplant"
+
+local EnergyTransmitter = require 'EnergyTransmitter'
+local Powerplant = class("Powerplant", EnergyTransmitter)
 
 Powerplant.mineral_cost = 400
 Powerplant.energy_produced_per_step = 50
 
 function Powerplant:initialize(x, y)
+    EnergyTransmitter.initialize(self)
     self.position = {x = x, y = y}
+    self.connections = {}
 end
 
 function Powerplant:draw()
@@ -15,7 +19,13 @@ function Powerplant:draw()
     love.graphics.pop()
 end
 
-function Powerplant:step()
+function Powerplant:potential()
+    return 1
+end
+
+
+function Powerplant:output()
+    return Powerplant.energy_produced_per_step
 end
 
 return Powerplant

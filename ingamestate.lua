@@ -138,6 +138,7 @@ function InGameState:keypressed(key)
       love.event.quit()
   end
   if key == "space" then
+      -- IDEA: evaluate nodes in decending potential order
       self.entities:callAll('step')
   end
 
