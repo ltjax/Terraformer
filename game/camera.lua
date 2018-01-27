@@ -58,7 +58,7 @@ function Camera:update()
         self.shakestart = self.shakestart + dt
     end
 
-    if mousex <= 0 or mousex >= w-1 or mousey <= 1 or mousey >= h-1 then
+    if not love.window.getFullscreen() and (mousex <= 0 or mousex >= w-1 or mousey <= 1 or mousey >= h-1 or not love.window.hasFocus()) then
         -- outside of window
         return
     end
