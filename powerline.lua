@@ -1,4 +1,5 @@
 local class = require "middleclass"
+local mathhelpers = require "mathhelpers"
 
 local Powerline = class "Powerline"
 
@@ -13,7 +14,7 @@ function Powerline:initialize(startBuilding, endBuilding)
     self.saturation = 0
 end
 
-function Powerline:draw()
+function Powerline:draw(camera)
     local c = math.sin(self.time)
     c = c * c
     c = c * self.saturation
@@ -23,6 +24,8 @@ function Powerline:draw()
     love.graphics.setColor(200*c+50, 160*c+50, 30*c+10)
     love.graphics.line(p0.x, p0.y, p1.x, p1.y)
     love.graphics.pop()
+    local middle = {x = (p0.x + p1.x) * 0.5, y = (p0.y + p1.y) * 0.5}
+    camera:drawText(mathhelpers.percentagestring(self.saturation), middle.x, middle.y)
 end
 
 function Powerline:update(dt)

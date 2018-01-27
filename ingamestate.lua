@@ -74,7 +74,8 @@ function InGameState:draw()
         love.graphics.line(0,i,m,i)
     end
     
-    self.entities:callAll('draw')
+    self.entities:callAll('draw', self.camera)
+    self.camera:drawTop()
 
     if self.drag.start and self.drag.stop then
         love.graphics.line(self.drag.start.x, self.drag.start.y, self.drag.stop.x, self.drag.stop.y)

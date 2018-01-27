@@ -1,4 +1,5 @@
 local class = require "middleclass"
+local mathhelpers = require "mathhelpers"
 
 local EnergyTransmitter = require 'EnergyTransmitter'
 local Node = class("Node", EnergyTransmitter)
@@ -15,7 +16,7 @@ function Node:initialize(_, posx, posy)
     self.energy = 0
 end
 
-function Node:draw()
+function Node:draw(camera)
   local half_edge_len = Node.edge_length * 0.5;
   love.graphics.push()
     love.graphics.setLineWidth(0.2)
@@ -29,6 +30,7 @@ function Node:draw()
     )
 
   love.graphics.pop();
+  camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
 function Node:receive(energy)

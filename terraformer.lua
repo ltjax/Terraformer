@@ -1,4 +1,5 @@
 local class = require "middleclass"
+local mathhelpers = require "mathhelpers"
 
 local EnergyTransmitter = require 'energytransmitter'
 local TerraFormer = class("TerraFormer", EnergyTransmitter)
@@ -17,11 +18,12 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.active = false
 end
 
-function TerraFormer:draw()
+function TerraFormer:draw(camera)
   love.graphics.push()
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.circle("fill", self.position.x, self.position.y, 0.5)
   love.graphics.pop();
+  camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
 function TerraFormer:drawBackground()

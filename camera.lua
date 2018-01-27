@@ -7,6 +7,7 @@ function Camera:initialize()
     self.position = {x = 0, y = 0}
     self.shakestart = 0
     self.trauma = 0
+    self.texts = {}
 end
 
 function Camera:setup()
@@ -23,7 +24,7 @@ function Camera:setup()
     if self.trauma > 0 then
         local shake = self.trauma * self.trauma
         local max_angle = math.rad(10)
-        local max_offset = 50 *self.zoom / 25
+        local max_offset = 50 * self.zoom / 25
         local SEED = 123
         local time = self.shakestart * 5
         local angle = max_angle * shake * (love.math.noise(SEED, time) * 2 - 1)
@@ -33,9 +34,9 @@ function Camera:setup()
         local width = love.graphics.getWidth()
         local height = love.graphics.getHeight()
         -- rotate around the center of the screen by angle radians
-        love.graphics.translate(width/2, height/2)
+        love.graphics.translate(width / 2, height / 2)
         love.graphics.rotate(angle)
-        love.graphics.translate(-width/2, -height/2)
+        love.graphics.translate(-width / 2, -height / 2)
     end
 
     love.graphics.translate(transform.dx + shakex, transform.dy + shakey)
@@ -49,8 +50,8 @@ function Camera:update()
     local mousex, mousey = love.mouse.getPosition()
     local BORDER = 50
     local MOVE_SPEED = 8.0
-    local move_diff = MOVE_SPEED * dt  * 25 / self.zoom
-    self.speed = move_diff /dt
+    local move_diff = MOVE_SPEED * dt * 25 / self.zoom
+    self.speed = move_diff / dt
     if self.trauma > 0 then
         self.trauma = math.max(0, self.trauma - dt * 0.5)
         self.shakestart = self.shakestart + dt
@@ -77,11 +78,14 @@ function Camera:update()
     end
 end
 
-function Camera:draw()
+function Camera:drawTop()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setColor(255, 0, 255)
-    love.graphics.print("movespeed: " .. tostring(self.speed), 100, 0)
+    for _, v in pairs(self.texts) do
+        love.graphics.print(unpack(v))
+    end
+    self.texts = {}
     love.graphics.pop()
 end
 
@@ -104,6 +108,13 @@ function Camera:addTrauma(v)
         self.shakestart = 0
     end
     self.trauma = clamp(0, self.trauma + v, 1)
+end
+
+function Camera:drawText(text, gridx, gridy)
+    local h = love.graphics.getHeight()
+    local x = (gridx + 0.5 - self.position.x) * self.zoom
+    local y = h - (gridy + 0.5 - self.position.y) * self.zoom
+    table.insert(self.texts, {text, x, y})
 end
 
 return Camera
