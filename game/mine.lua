@@ -4,6 +4,7 @@ local mathhelpers = require "mathhelpers"
 local EnergyTransmitter = require "energytransmitter"
 local Mine = class("Mine", EnergyTransmitter)
 local messages = require "messages"
+local resources = require "resources"
 
 Mine.static.energy_cost = 0.9 -- per second
 Mine.static.max_energy = Mine.energy_cost * 5
@@ -11,6 +12,7 @@ Mine.static.mineral_cost = 600
 Mine.static.produce_speed = 2 -- per second
 Mine.static.mine_pack = 5
 Mine.static.image = love.graphics.newImage('mine.png')
+Mine.static.needed_resource =  resources.type.METAL
 
 function Mine:initialize(eventBus, posx, posy)
     EnergyTransmitter.initialize(self)

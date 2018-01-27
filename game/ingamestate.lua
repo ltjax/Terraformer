@@ -13,6 +13,7 @@ local mathhelpers = require 'mathhelpers'
 local constants = require 'constants'
 local TerraformedGrid = require 'terraformedgrid'
 local settings = require 'settings'
+local resources = require 'resources'
 
 local InGameState = {}
 
@@ -31,6 +32,7 @@ function InGameState:init()
     self.entities = Entities:new()
     self.player = Player:new(self.eventBus);
     self.grid = Grid:new()
+    self.resources = resources:new()
     self.camera = Camera:new();
     self.hud_building = HudBuilding:new(self)
     self.accumulated = 0.0
@@ -52,6 +54,7 @@ function InGameState:init()
     self:insertEntity(self.player)
     self:insertEntity(self.camera)
     self:insertEntity(self.hud_building)
+    self:insertEntity(self.resources)
 
     local terraformer = TerraFormer:new(self.eventBus, 7, 14)
     terraformer.energy = 5
@@ -60,6 +63,7 @@ function InGameState:init()
     local node = Node:new(nil, 5, 10)
     local powerPlant = PowerPlant:new(nil, 2, 11)
     local mine = Mine:new(self.eventBus, 6, 7)
+    self.resources:set(mine.position.x, mine.position.y, resources.type.METAL)
     self:insertBuilding(terraformer)
     self:insertBuilding(node)
     self:insertBuilding(powerPlant)
@@ -80,7 +84,7 @@ function InGameState:insertBuilding(building)
 end
 
 function InGameState:createBuilding(building_class, x, y)
-    if not self:canBuild(x, y) then
+    if not self:canBuild(x, y, building_class) then
         return nil
     end
     if not self.player:use_minerals(building_class.mineral_cost) then
@@ -105,11 +109,14 @@ function InGameState:drawBackgroundTiles()
     end
 end
 
-function InGameState:canBuild(x, y)
+function InGameState:canBuild(x, y, type)
     if self.grid:get(x, y) ~= nil then
         return false
     end
     if not self:terraformed(x, y) then
+        return false
+    end
+    if type.needed_resource ~= nil and not self.resources:has(x, y, type.needed_resource) then
         return false
     end
     return true
