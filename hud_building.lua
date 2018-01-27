@@ -62,7 +62,6 @@ function HudBuilding:mousepressed(mousex, mousey, button)
         if self.placement then
             local x, y = self.ingamestate:mouseGridPosition()
             self.ingamestate:createBuilding(self.placement, x, y)
-            self.placement = nil
             return true
         end
         local x = self.button_start.x
