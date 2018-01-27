@@ -29,7 +29,10 @@ function Powerline:drawLane(lane, from, to)
     local s = 0.05
     
     for _, v in ipairs(lane) do
-        love.graphics.draw(self.image, from.x + v*dx, from.y + v*dy, 0, s, s)
+        local px = from.x + v*dx
+        local py = from.y + v*dy
+        love.graphics.draw(self.image, px, py, 0, s, s, 16, 16)
+        --love.graphics.circle('fill', px, py, 0.3)
     end
 end
 
@@ -43,6 +46,7 @@ function Powerline:draw(camera)
     love.graphics.line(p0.x, p0.y, p1.x, p1.y)
     
     love.graphics.setBlendMode("add")
+    love.graphics.setColor(255, 255, 255, 255)
     self:drawLane(self.toA, self.b.position, self.a.position)
     self:drawLane(self.toB, self.a.position, self.b.position)
     love.graphics.setBlendMode("replace")
