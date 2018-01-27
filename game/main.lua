@@ -39,5 +39,5 @@ function love.load(arg)
         'joystickpressed', 'joystickreleased', 'joystickremoved' }
 
     Gamestate.registerEvents(events)
-    Gamestate.switch(require "ingamestate")
+    Gamestate.switch(require "mainmenu")
 end
