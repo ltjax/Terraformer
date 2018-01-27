@@ -5,7 +5,7 @@ local EnergyTransmitter = require 'EnergyTransmitter'
 local Powerplant = class("Powerplant", EnergyTransmitter)
 
 Powerplant.mineral_cost = 400
-Powerplant.energy_produced_per_second = 1.4
+Powerplant.energy_produced_per_second = 2.4
 
 function Powerplant:initialize(_, x, y)
     EnergyTransmitter.initialize(self)

@@ -68,9 +68,10 @@ function InGameState:draw()
     self.entities:callAll('drawBackground')
 
     -- Draw simple grid
+    love.graphics.setBlendMode("alpha")
     local m=200
     for i=0,m do
-        love.graphics.setColor(32,32,32)
+        love.graphics.setColor(32,32,32, 64)
         love.graphics.setLineWidth(1 / 25)
         love.graphics.line(i,0,i,m)
         love.graphics.line(0,i,m,i)
@@ -112,6 +113,7 @@ function InGameState:mousepressed(x, y, button)
     local x, y = self:mouseGridPosition()
     if self.grid:get(x, y)~=nil then
         self.drag.start = {x=x, y=y}
+        self.drag.stop = nil
         self.drag.mode = 'line'
     end
 end

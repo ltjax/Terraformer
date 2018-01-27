@@ -36,6 +36,7 @@ function Powerline:draw(camera)
     local p0 = self.a.position
     local p1 = self.b.position
     love.graphics.push()
+    love.graphics.setBlendMode("alpha")
     love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
     love.graphics.setLineWidth(1/25)
     love.graphics.line(p0.x, p0.y, p1.x, p1.y)
