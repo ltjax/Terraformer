@@ -11,27 +11,34 @@ local PowerLine = require 'powerline'
 local InGameState = {}
 
 function InGameState:init()
-    self.eventBus = EventBus:new()
-    self.entities = Entities:new()
-    self.player = Player:new(self.eventBus);
-    self.grid = Grid:new()
+  self.eventBus = EventBus:new()
+  self.entities = Entities:new()
+  self.player = Player:new(self.eventBus);
+  self.grid = Grid:new()
 
-    self.drag = {
-        mode= 'off',
-    }
-    self:insertEntity(self.player)
+  self.drag = {
+      mode= 'off',
+  }
+  self:insertEntity(self.player)
 
-    local terraformer = TerraFormer:new(self.eventBus, 2, 2)
-    self:insertEntity(terraformer)
-    self.grid:set(2, 2, terraformer)
-
-    local node = Node:new(1, 1)
-    self:insertEntity(node)
-    self.grid:set(1, 1, node)
+  local terraformer = TerraFormer:new(self.eventBus, 7, 14)
+  local node = Node:new(5, 10)
+  local powerPlant = PowerPlant:new(2, 11)
+  self:insertBuilding(terraformer)
+  self:insertBuilding(node)
+  self:insertBuilding(powerPlant)
+  
+  self:connectLine(terraformer, node)
+  self:connectLine(powerPlant, node)
 end
 
 function InGameState:insertEntity(entity)
     self.entities:add(entity)
+end
+
+function InGameState:insertBuilding(building)
+  self:insertEntity(building)
+  self.grid:set(building.position.x, building.position.y, building)
 end
 
 function InGameState:draw()
@@ -130,26 +137,25 @@ function InGameState:mouseGridPosition()
 end
 
 function InGameState:keypressed(key)
-    local posx, posy = self:mouseGridPosition()
-    
-    if key == "escape" then
-        love.event.quit()
-    end
-    if key == "space" then
-        self.entities:callAll('step')
-    end
+  local posx, posy = self:mouseGridPosition()
+  
+  if key == "escape" then
+      love.event.quit()
+  end
+  if key == "space" then
+      self.entities:callAll('step')
+  end
 
-    if self.grid:get(posx, posy) then
-        return
-    end
+  if self.grid:get(posx, posy) then
+      return
+  end
 
-    local building = self:newBuildingFor(key, posx, posy)
-    if not building then
-        return
-    end
+  local building = self:newBuildingFor(key, posx, posy)
+  if not building then
+      return
+  end
 
-    self:insertEntity(building)
-    self.grid:set(posx, posy, building)
+  self:insertBuilding(building)
 end
 
 return InGameState

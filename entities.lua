@@ -14,7 +14,7 @@ function Entities:callAll(functionName, ...)
   for _, entity in ipairs(self.list) do
     local f = entity[functionName]
     if f~=nil then
-      f(entity, unpack(arg))
+      f(entity, ...)
     end
   end
 end
