@@ -105,12 +105,16 @@ function InGameState:draw()
 
     -- Draw simple grid
     love.graphics.setBlendMode("alpha")
+    local b0, b1 = self.camera:boundingBox()
+    b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
     local m=200
-    for i=0,m do
-        love.graphics.setColor(32,32,32, 64)
-        love.graphics.setLineWidth(1 / 25)
-        love.graphics.line(i,0,i,m)
-        love.graphics.line(0,i,m,i)
+    for i=b0.x,b1.x do
+        for j=b0.y,b1.y do
+            love.graphics.setColor(32,32,32, 64)
+            love.graphics.setLineWidth(1 / 25)
+            love.graphics.line(i,b0.y,i,b1.y+1)
+            love.graphics.line(b0.x,j,b1.x+1,j)
+        end
     end
     
     self.entities:callAll('draw', self.camera)
