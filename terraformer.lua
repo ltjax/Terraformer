@@ -22,13 +22,37 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.active = false
     self.generated = 0
     self.active_radius = TerraFormer.shield_radius_min
+
+    local fragSrc =  [[
+        vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords )
+        {
+            vec4 texcolor = Texel(texture, texture_coords);
+            vec4 c = color;
+            
+            if(length(texture_coords) > 0.5)
+              c = vec4(1.0, 1.0, 0.0, 1.0);
+            
+            return vec4(gl_FragCoord.xy, 0.0, 1.0);
+        }
+    ]]
+ 
+    local vertexSrc = [[
+        vec4 position( mat4 transform_projection, vec4 vertex_position )
+        {
+            return transform_projection * vertex_position;
+        }
+    ]]
+
+    self.shader = love.graphics.newShader(fragSrc, vertexSrc);
+
 end
 
 function TerraFormer:drawOverlay(camera)
-  love.graphics.push()
+    love.graphics.push()
     love.graphics.setColor(180, 255, 180, 255)
     love.graphics.setBlendMode('alpha')
     drawCentered(TerraFormer.image, self.position.x, self.position.y)
+
     if self.active and self.active_radius < TerraFormer.shield_radius_max then
         love.graphics.setLineWidth(0.05);
         love.graphics.setColor(0, 255, 0, 150)
@@ -43,11 +67,12 @@ function TerraFormer:drawBackground()
     if not self.active then
         return
     end
-
+    love.graphics.setShader(self.shader)
     love.graphics.push()
         love.graphics.setColor(0, 255, 0, 50)
         love.graphics.circle("fill", self.position.x, self.position.y, self.active_radius, TerraFormer.segments)
     love.graphics.pop()
+    love.graphics.setShader()
 end
 
 function TerraFormer:update(dt)
