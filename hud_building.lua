@@ -1,14 +1,10 @@
 local class = require "middleclass"
 local HudBuilding = class "HudBuilding"
 
-local TerraFormer = require "terraformer"
-local Node = require "node"
-local PowerPlant = require "powerplant"
-
 local buildings = {
-    TERRAFORMER = {text = "TerraFormer", create_class = TerraFormer},
-    NODE = {text = "Node", create_class = Node},
-    POWERPLANT = {text = "PowerPlant", create_class = PowerPlant}
+    require "terraformer",
+    require "node",
+    require "powerplant"
 }
 local Y_STEP = 30
 local SIZE = {w = 140, h = 20}
@@ -29,8 +25,8 @@ function HudBuilding:draw()
     love.graphics.setBlendMode("alpha")
     local x = self.button_start.x
     local y = self.button_start.y
-    for i, v in pairs(buildings) do
-        local selected = self.placement == v.create_class
+    for _, v in pairs(buildings) do
+        local selected = self.placement == v
         local bg_color = {50, 120, 250}
         if selected then
             bg_color = {20, 50, 100}
@@ -38,9 +34,9 @@ function HudBuilding:draw()
         love.graphics.setColor(unpack(bg_color))
         love.graphics.rectangle("fill", x, y, SIZE.w, SIZE.h, 5, 5)
         love.graphics.setColor(255, 255, 255)
-        love.graphics.print(v.text, x + 5, y + 4)
-        if v.create_class.mineral_cost then
-            love.graphics.print(tostring(v.create_class.mineral_cost), x + SIZE.w - 30, y + 4)
+        love.graphics.print(v.name, x + 5, y + 4)
+        if v.mineral_cost then
+            love.graphics.print(tostring(v.mineral_cost), x + SIZE.w - 30, y + 4)
         end
         y = y + Y_STEP
     end
@@ -73,7 +69,7 @@ function HudBuilding:mousepressed(mousex, mousey, button)
         local y = self.button_start.y
         for _, v in pairs(buildings) do
             if mousex > x and mousex < x + SIZE.w and mousey > y and mousey < y + SIZE.h then
-                self.placement = v.create_class
+                self.placement = v
                 return true
             end
             y = y + Y_STEP
