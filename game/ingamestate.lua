@@ -11,6 +11,7 @@ local PowerLine = require 'powerline'
 local HudBuilding = require 'hud_building'
 local mathhelpers = require 'mathhelpers'
 local constants = require 'constants'
+local TerraformedGrid = require 'terraformedgrid'
 
 local InGameState = {}
 
@@ -30,6 +31,7 @@ function InGameState:init()
     self.background = love.graphics.newImage('background.png')
     self.speedUp = 1
     self.time = 0
+    self.terraformedGrid = TerraformedGrid:new(self.eventBus)
 
     self.drag = {
         mode= 'off',
@@ -41,6 +43,7 @@ function InGameState:init()
     local terraformer = TerraFormer:new(nil, 7, 14)
     terraformer.energy = 5
     terraformer.active_radius = TerraFormer.shield_radius_max
+    self.terraformedGrid:radiusChanged(terraformer)
     local node = Node:new(nil, 5, 10)
     local powerPlant = PowerPlant:new(nil, 2, 11)
     local mine = Mine:new(self.eventBus, 6, 7)
