@@ -58,7 +58,7 @@ function Camera:update()
         self.shakestart = self.shakestart + dt
     end
 
-    if mousex < 0 or mousey < 0 or mousex > w or mousey > h then
+    if mousex <= 0 or mousex >= w-1 or mousey <= 1 or mousey >= h-1 then
         -- outside of window
         return
     end

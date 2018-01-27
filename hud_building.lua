@@ -4,32 +4,36 @@ local HudBuilding = class "HudBuilding"
 local buildings = {
     require "terraformer",
     require "node",
-    require "powerplant"
+    require "powerplant",
+    require "mine",
 }
 local Y_STEP = 30
 local SIZE = {w = 140, h = 20}
+
+function buttonStart()
+    return love.graphics.getWidth() - SIZE.w - 10, love.graphics.getHeight() - #buildings * Y_STEP - 40
+end
 
 function HudBuilding:initialize(ingamestate)
     self.ingamestate = ingamestate
     self.buttons = {}
     self.placement = nil
-    self.button_start = {
-        x = love.graphics.getWidth() - 150,
-        y = love.graphics.getHeight() - 100
-    }
 end
 
 function HudBuilding:draw()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setBlendMode("alpha")
-    local x = self.button_start.x
-    local y = self.button_start.y
+    local x, y = buttonStart()
     for _, v in pairs(buildings) do
         local selected = self.placement == v
         local bg_color = {50, 120, 250}
         if selected then
             bg_color = {20, 50, 100}
+        else
+            if not self.ingamestate.player:has_minerals(v.mineral_cost) then
+                bg_color = {180, 20, 20}
+            end
         end
         love.graphics.setColor(unpack(bg_color))
         love.graphics.rectangle("fill", x, y, SIZE.w, SIZE.h, 5, 5)
@@ -64,8 +68,7 @@ function HudBuilding:mousepressed(mousex, mousey, button)
             self.ingamestate:createBuilding(self.placement, x, y)
             return true
         end
-        local x = self.button_start.x
-        local y = self.button_start.y
+        local x, y = buttonStart()
         for _, v in pairs(buildings) do
             if mousex > x and mousex < x + SIZE.w and mousey > y and mousey < y + SIZE.h then
                 self.placement = v
