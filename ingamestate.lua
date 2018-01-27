@@ -31,6 +31,8 @@ function InGameState:init()
     self:insertEntity(self.hud_building)
 
     local terraformer = TerraFormer:new(nil, 7, 14)
+    terraformer.energy = 5
+    terraformer.active_radius = TerraFormer.shield_radius_max
     local node = Node:new(nil, 5, 10)
     local powerPlant = PowerPlant:new(nil, 2, 11)
     local mine = Mine:new(self.eventBus, 6, 7)
