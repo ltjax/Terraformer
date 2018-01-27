@@ -5,7 +5,7 @@ local EnergyTransmitter = require 'EnergyTransmitter'
 local Powerplant = class("Powerplant", EnergyTransmitter)
 
 Powerplant.mineral_cost = 400
-Powerplant.energy_produced_per_step = 50
+Powerplant.energy_produced_per_second = 1.4
 
 function Powerplant:initialize(_, x, y)
     EnergyTransmitter.initialize(self)
@@ -23,7 +23,7 @@ function Powerplant:draw(camera)
 end
 
 function Powerplant:update(dt)
-    self.energyAccumulation = self.energyAccumulation + dt
+    self.energyAccumulation = self.energyAccumulation + dt*Powerplant.energy_produced_per_second
 end
 
 function Powerplant:potential()

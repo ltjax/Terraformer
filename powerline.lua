@@ -8,7 +8,7 @@ Powerline.static.max_energy = 40
 function magnitude(a, b)
     local dx = b.x - a.x
     local dy = b.y - a.y
-    return dx*dx + dy*dy
+    return math.sqrt(dx*dx + dy*dy)
 end
 
 function Powerline:initialize(startBuilding, endBuilding)
@@ -26,7 +26,7 @@ end
 function Powerline:drawLane(lane, from, to)
     local dx = to.x - from.x
     local dy = to.y - from.y
-    local s = 0.05
+    local s = 0.025
     
     for _, v in ipairs(lane) do
         local px = from.x + v*dx

@@ -6,7 +6,7 @@ local TerraFormer = class("TerraFormer", EnergyTransmitter)
 local messages = require "messages"
 
 TerraFormer.static.max_energy = 40
-TerraFormer.static.energy_cost = 10
+TerraFormer.static.energy_cost = 0.4 -- per second
 TerraFormer.static.segments = 100
 TerraFormer.static.mineral_cost = 100
 
@@ -16,6 +16,7 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.position = {x = posx, y = posy }
     self.energy = 0
     self.active = false
+    self.generated = 0
 end
 
 function TerraFormer:draw(camera)
@@ -37,12 +38,18 @@ function TerraFormer:drawBackground()
     love.graphics.pop()
 end
 
-function TerraFormer:step()
-    EnergyTransmitter.step(self)
-    self.active = false
-    if self.energy >= TerraFormer.energy_cost then
+function TerraFormer:update(dt)
+    local usage = dt * TerraFormer.energy_cost
+    if self.energy > usage then
+        self.energy = self.energy - usage
         self.active = true
-        self.energy = self.energy - TerraFormer.energy_cost
+        self.generated = self.generated + dt
+    else
+        self.active = false
+    end
+    
+    while self.generated > 1 do
+        self.generated = self.generated - 1
         self.eventBus:dispatch(messages.minerals_produced(5))
     end
 end
@@ -52,7 +59,7 @@ function TerraFormer:receive()
 end
 
 function TerraFormer:potential()
-    return self.energy / TerraFormer.max_energy
+    return 0
 end
 
 return TerraFormer

@@ -14,6 +14,7 @@ function Node:initialize(_, posx, posy)
     EnergyTransmitter.initialize(self)
     self.position = {x = posx, y = posy }
     self.energy = 0
+    self.average_potential = 0
 end
 
 function Node:draw(camera)
@@ -34,6 +35,19 @@ function Node:draw(camera)
   camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
+function Node:update(dt)
+    if #self.connections <= 0 then
+        return
+    end
+    
+    local a = 0
+    for _, connection in ipairs(self.connections) do
+        a = a + connection:otherFor(self):potential()
+    end
+    self.average_potential = a / #self.connections
+end
+
+
 function Node:receive()
     self.energy = math.min(Node.max_energy_storage, self.energy+1)
 end
@@ -47,7 +61,7 @@ function Node:output()
 end
 
 function Node:potential()
-    return self.energy / Node.max_energy_storage
+    return self.average_potential
 end
 
 
