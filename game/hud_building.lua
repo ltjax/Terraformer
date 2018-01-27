@@ -21,7 +21,7 @@ function HudBuilding:initialize(ingamestate)
     self.placement = nil
 end
 
-function HudBuilding:draw()
+function HudBuilding:drawHud()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setBlendMode("alpha")

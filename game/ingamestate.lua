@@ -171,7 +171,7 @@ function InGameState:draw()
 
     self.entities:callAll('draw', self.camera)
     self.entities:callAll('drawOverlay', self.camera)
-    self.camera:drawTop()
+    self.entities:callAll('drawHud', self.camera)
 
     if self.drag.start and self.drag.stop then
         love.graphics.line(self.drag.start.x, self.drag.start.y, self.drag.stop.x, self.drag.stop.y)
@@ -281,7 +281,7 @@ function InGameState:dragTarget()
         elseif mathhelpers.length({x=d.x, y=d.y+oy}) <= max_length then
             d.y = d.y + oy
         else
-            d.x, d.y = d.x +ox, d.y + oy
+            d.x, d.y = d.x + ox, d.y + oy
         end
     end
     local e = mathhelpers.add(d, self.drag.start)

@@ -81,7 +81,7 @@ function Camera:update()
     end
 end
 
-function Camera:drawTop()
+function Camera:drawHud()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setColor(255, 0, 255)
