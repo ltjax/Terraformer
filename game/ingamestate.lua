@@ -146,16 +146,16 @@ function InGameState:draw()
     self.entities:callAll('drawBackground', self.camera)
     love.graphics.setCanvas()
 
+    self:drawBackgroundTiles()
+
     love.graphics.origin()
     love.graphics.scale(1, -1)
     love.graphics.translate(0, -love.graphics.getHeight())
     love.graphics.setBlendMode("alpha", "premultiplied")
     love.graphics.draw(canvas)
 
-    self.camera:setup()
-    self:drawBackgroundTiles()
-
     -- Draw simple grid
+    self.camera:setup()
     local b0, b1 = self.camera:boundingBox()
     b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
     love.graphics.setBlendMode("alpha")
@@ -168,7 +168,7 @@ function InGameState:draw()
             love.graphics.line(b0.x,j,b1.x+1,j)
         end
     end
-    
+
     self.entities:callAll('draw', self.camera)
     self.entities:callAll('drawOverlay', self.camera)
     self.camera:drawTop()
