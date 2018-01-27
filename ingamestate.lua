@@ -226,6 +226,9 @@ function InGameState:keypressed(key)
         -- IDEA: evaluate nodes in decending potential order
         self.entities:callAll('step')
     end
+    if key == 'f1' then
+        love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
+    end
 end
 
 function InGameState:wheelmoved(x, y)
