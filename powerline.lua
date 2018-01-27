@@ -48,8 +48,6 @@ function Powerline:draw(camera)
     love.graphics.setBlendMode("replace")
     
     love.graphics.pop()
-    local middle = {x = (p0.x + p1.x) * 0.5, y = (p0.y + p1.y) * 0.5}
-    camera:drawText(tostring(#self.toA + #self.toB), middle.x, middle.y)
 end
 
 function Powerline:update(dt)

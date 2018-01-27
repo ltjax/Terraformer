@@ -8,6 +8,8 @@ function love.load(arg)
         require("mobdebug").start()
     end
 
+    love.window.setTitle("Terraformer")
+    
     -- Start the gamestate manager and move to the logo state
     local events = {'draw', 'errhand', 'focus', 'keypressed', 'keyreleased', 'mousefocus',
         'mousepressed', 'mousereleased', 'mousemoved', 'wheelmoved', 'quit', 'resize', 'textinput',

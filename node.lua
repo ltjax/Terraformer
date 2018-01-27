@@ -32,7 +32,7 @@ function Node:draw(camera)
     )
 
   love.graphics.pop();
-  camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
+  --camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
 function Node:update(dt)

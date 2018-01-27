@@ -19,7 +19,7 @@ function Powerplant:draw(camera)
     love.graphics.setColor(255, 255, 0)
     love.graphics.circle("fill", self.position.x, self.position.y, 0.5)
     love.graphics.pop()
-    camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
+    --camera:drawText(mathhelpers.percentagestring(self:potential()), self.position.x, self.position.y)
 end
 
 function Powerplant:update(dt)
