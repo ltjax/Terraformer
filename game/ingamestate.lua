@@ -13,6 +13,11 @@ local mathhelpers = require 'mathhelpers'
 
 local InGameState = {}
 
+InGameState.assets = {
+    building_placement = love.audio.newSource("sfx/building_placement.mp3", "static"),
+    not_enough_minerals = love.audio.newSource("sfx/not_enough_mins.mp3", "static")
+}
+
 function InGameState:init()
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
@@ -56,13 +61,18 @@ function InGameState:insertBuilding(building)
 end
 
 function InGameState:createBuilding(building_class, x, y)
-    if self:canBuild(x, y) and self.player:use_minerals(building_class.mineral_cost) then
-        local building = building_class:new(self.eventBus, x, y)
-        self:insertBuilding(building)
-        self.camera:addTrauma(0.2)
-        return building
+    if not self:canBuild(x, y) then
+        return nil
     end
-    return nil
+    if not self.player:use_minerals(building_class.mineral_cost) then
+        InGameState.assets.not_enough_minerals:play()
+        return nil
+    end
+    local building = building_class:new(self.eventBus, x, y)
+    self:insertBuilding(building)
+    self.camera:addTrauma(0.2)
+    InGameState.assets.building_placement:play()
+    return building
 end
 
 function InGameState:drawBackgroundTiles()
