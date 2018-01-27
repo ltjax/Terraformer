@@ -12,13 +12,19 @@ local HudBuilding = require 'hud_building'
 local mathhelpers = require 'mathhelpers'
 local constants = require 'constants'
 local TerraformedGrid = require 'terraformedgrid'
+local settings = require 'settings'
 
 local InGameState = {}
 
 InGameState.assets = {
+    ambient_forest = love.audio.newSource("sfx/forest.mp3"),
+    ambient_wind = love.audio.newSource("sfx/wind.mp3"),
     building_placement = love.audio.newSource("sfx/building_placement.mp3", "static"),
     not_enough_minerals = love.audio.newSource("sfx/not_enough_mins.mp3", "static")
 }
+
+InGameState.assets.ambient_forest:setLooping(true)
+InGameState.assets.ambient_wind:setLooping(true)
 
 function InGameState:init()
     self.eventBus = EventBus:new()
@@ -32,10 +38,17 @@ function InGameState:init()
     self.speedUp = 1
     self.time = 0
     self.terraformedGrid = TerraformedGrid:new(self.eventBus)
+    self.forest_volume = 1
 
     self.drag = {
         mode= 'off',
     }
+    
+    InGameState.assets.ambient_forest:setVolume(settings:ambientVolume())
+    InGameState.assets.ambient_wind:setVolume(0.0)
+    InGameState.assets.ambient_forest:play()
+    InGameState.assets.ambient_wind:play()
+
     self:insertEntity(self.player)
     self:insertEntity(self.camera)
     self:insertEntity(self.hud_building)
@@ -179,6 +192,37 @@ function InGameState:update(dt)
         self.accumulated = self.accumulated - frameTime
         self.entities:callAll('step', frameTime)
     end
+    self:updateAmbient(dt)
+end
+function InGameState:updateAmbient(dt)
+    local p0, p1 = self.camera:boundingBox()
+    local diff = mathhelpers.scale(mathhelpers.difference(p0, p1), 0.5)
+    local center = mathhelpers.add(p0, diff)
+    diff = mathhelpers.scale(diff, 0.5)
+    local diff_o = {x=diff.x, y=-diff.y}
+    local c0 = mathhelpers.add(center, diff)
+    local c1 = mathhelpers.add(center, mathhelpers.negate(diff))
+    local c2 = mathhelpers.add(center, diff_o)
+    local c3 = mathhelpers.add(center, mathhelpers.negate(diff_o))
+
+    local points = {center, c0, c1, c2, c3}
+    local terraformed = 0
+    for _, p in pairs(points) do
+        if self:terraformed(p.x, p.y) then
+            terraformed = terraformed + 1
+        end
+    end
+    local inside = terraformed > #points / 2
+    local AMBIENT_FADE = 2
+    if inside then
+        self.forest_volume = math.min(1, self.forest_volume + dt / AMBIENT_FADE)
+    else
+        self.forest_volume = math.max(0, self.forest_volume - dt / AMBIENT_FADE)
+    end
+    local wind_volume = 1 - self.forest_volume
+    local ambient_volume = settings:ambientVolume()
+    InGameState.assets.ambient_forest:setVolume(ambient_volume * self.forest_volume)
+    InGameState.assets.ambient_wind:setVolume(ambient_volume * wind_volume)
 end
 
 function InGameState:mousepressed(x, y, button)
