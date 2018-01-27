@@ -36,4 +36,8 @@ function mathhelpers.distance(a, b)
     return mathhelpers.length(mathhelpers.difference(a, b))
 end
 
+function mathhelpers.floor(a)
+    return {x=math.floor(a.x), y=math.floor(a.y)}
+end
+
 return mathhelpers

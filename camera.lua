@@ -1,6 +1,7 @@
 local class = require "middleclass"
 local Camera = class "Camera"
 local Transform = require "Transform"
+local mathhelpers = require "mathhelpers"
 
 function Camera:initialize()
     self.zoom = 25
@@ -87,6 +88,11 @@ function Camera:drawTop()
     end
     self.texts = {}
     love.graphics.pop()
+end
+
+function Camera:boundingBox()
+    local windowSize = mathhelpers.scale({x = love.graphics:getWidth(),y = love.graphics:getHeight() }, 1 / self.zoom)
+    return self.position, mathhelpers.add(self.position, windowSize)
 end
 
 function Camera:wheelmoved(_, y)
