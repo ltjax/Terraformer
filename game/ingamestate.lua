@@ -154,7 +154,12 @@ function InGameState:draw()
     love.graphics.setColor(255, 255, 255, 128)
     local timeString = string.format("%.1f", self.time)
     if self.speedUp ~= 1 then
-        timeString = string.format("%s (%.0fx)", timeString, self.speedUp)
+        formatString = "%s (%.0fx)"
+        if self.speedUp < 1 then
+            formatString = "%s (%.2fx)"
+        end
+        
+        timeString = string.format(formatString, timeString, self.speedUp)
     end
     
     love.graphics.print(timeString, love.graphics.getWidth() / 2, 0)
@@ -249,10 +254,10 @@ function InGameState:keypressed(key)
     if key == "escape" then
         love.event.quit()
     end
-    if key == "+" then
+    if key == "e" then
         self.speedUp = self.speedUp * 2
     end
-    if key == "-" then
+    if key == "q" then
         self.speedUp = self.speedUp * 0.5
     end
     

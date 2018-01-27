@@ -14,13 +14,14 @@ TerraFormer.static.shield_radius_min = 2
 TerraFormer.static.shield_radius_max = 8
 TerraFormer.static.image = love.graphics.newImage('terraformer.png')
 
-function TerraFormer:initialize(_, posx, posy)
+function TerraFormer:initialize(eventBus, posx, posy)
     EnergyTransmitter.initialize(self)
     self.position = {x = posx, y = posy }
     self.energy = 0
     self.active = false
     self.generated = 0
     self.active_radius = TerraFormer.shield_radius_min
+    self.eventBus = eventBus
 
     local fragSrc =  [[
         vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords )
@@ -80,11 +81,17 @@ function TerraFormer:update(dt)
     if self.energy > usage then
         self.energy = self.energy - usage
         self.active = true
-        self.active_radius = math.min(TerraFormer.shield_radius_max, self.active_radius + TerraFormer.shield_radius_increase * dt)
+        if self.active_radius ~= TerraFormer.shield_radius_max then
+            self.active_radius = math.min(TerraFormer.shield_radius_max, self.active_radius + TerraFormer.shield_radius_increase * dt)
+            self.eventBus:dispatch(messages.radiusChanged(self))
+        end
     else
-        self.active_radius = math.max(TerraFormer.shield_radius_min, self.active_radius - TerraFormer.shield_radius_increase * dt)
-        if self.active_radius <= TerraFormer.shield_radius_min then
-            self.active = false
+        if self.active_radius ~= TerraFormer.shield_radius_min then
+            self.active_radius = math.max(TerraFormer.shield_radius_min, self.active_radius - TerraFormer.shield_radius_increase * dt)
+            if self.active_radius <= TerraFormer.shield_radius_min then
+                self.active = false
+            end
+            self.eventBus:dispatch(messages.radiusChanged(self))
         end
     end
 end
