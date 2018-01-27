@@ -1,7 +1,7 @@
 local class = require "middleclass"
 local mathhelpers = require "mathhelpers"
+local EnergyTransmitter = require 'energytransmitter'
 
-local EnergyTransmitter = require 'EnergyTransmitter'
 local Powerplant = class("Powerplant", EnergyTransmitter)
 
 Powerplant.static.mineral_cost = 400

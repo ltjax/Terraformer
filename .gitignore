@@ -47,3 +47,4 @@ luac.out
 
 # Reaper
 *.reapeaks
+.DS_Store

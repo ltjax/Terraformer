@@ -1,7 +1,7 @@
 local class = require "middleclass"
 local mathhelpers = require "mathhelpers"
+local EnergyTransmitter = require 'energytransmitter'
 
-local EnergyTransmitter = require 'EnergyTransmitter'
 local Node = class("Node", EnergyTransmitter)
 
 Node.static.max_energy_storage = 50

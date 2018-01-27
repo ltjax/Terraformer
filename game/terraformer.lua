@@ -1,7 +1,7 @@
 local class = require "middleclass"
 local mathhelpers = require "mathhelpers"
-
 local EnergyTransmitter = require 'energytransmitter'
+
 local TerraFormer = class("TerraFormer", EnergyTransmitter)
 local messages = require "messages"
 
@@ -47,10 +47,12 @@ function TerraFormer:initialize(_, posx, posy)
 end
 
 function TerraFormer:drawOverlay(camera)
+    local x, y = self.position.x, self.position.y
+    
     love.graphics.push()
     love.graphics.setColor(180, 255, 180, 255)
     love.graphics.setBlendMode('alpha')
-    drawCentered(TerraFormer.image, self.position.x, self.position.y)
+    drawCentered(TerraFormer.image, x, y)
 
     if self.active and self.active_radius < TerraFormer.shield_radius_max then
         love.graphics.setLineWidth(0.05);
@@ -58,6 +60,7 @@ function TerraFormer:drawOverlay(camera)
         love.graphics.circle("line", self.position.x, self.position.y, self.active_radius, TerraFormer.segments)
     end
   love.graphics.pop();
+  camera:drawText(string.format("Energy: %.1f", self.energy), x, y)
 end
 
 function TerraFormer:drawBackground()

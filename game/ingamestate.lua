@@ -10,6 +10,7 @@ local Grid = require 'grid'
 local PowerLine = require 'powerline'
 local HudBuilding = require 'hud_building'
 local mathhelpers = require 'mathhelpers'
+local constants = require 'constants'
 
 local InGameState = {}
 
@@ -22,6 +23,8 @@ function InGameState:init()
     self.hud_building = HudBuilding:new(self)
     self.accumulated = 0.0
     self.background = love.graphics.newImage('background.png')
+    self.speedUp = 1
+    self.time = 0
 
     self.drag = {
         mode= 'off',
@@ -102,6 +105,7 @@ function InGameState:draw()
     local h = love.graphics:getHeight()
     self.camera:setup()
 
+    love.graphics.setFont(constants.NORMAL_FONT)
     -- Scale everything up
     love.graphics.setBlendMode("replace")
     
@@ -134,12 +138,23 @@ function InGameState:draw()
     love.graphics.push()
     love.graphics.origin()
     local x,y = love.mouse.getPosition()
-    love.graphics.print(tostring(x) .. "|" .. tostring(h - y), 0, 0)
+    --love.graphics.print(tostring(x) .. "|" .. tostring(h - y), 0, 0)
+    love.graphics.setBlendMode("alpha")
+    love.graphics.setFont(constants.BIG_FONT)
+    love.graphics.setColor(255, 255, 255, 128)
+    local timeString = string.format("%.1f", self.time)
+    if self.speedUp ~= 1 then
+        timeString = string.format("%s (%.0fx)", timeString, self.speedUp)
+    end
+    
+    love.graphics.print(timeString, love.graphics.getWidth() / 2, 0)
     love.graphics.pop()
 end
 
 function InGameState:update(dt)
     local frameTime = 1/30
+    dt = dt * self.speedUp
+    self.time = self.time + dt
     self.entities:callAll('update', dt)
     self.accumulated = self.accumulated + dt
     while self.accumulated > frameTime do
@@ -224,10 +239,13 @@ function InGameState:keypressed(key)
     if key == "escape" then
         love.event.quit()
     end
-    if key == "space" then
-        -- IDEA: evaluate nodes in decending potential order
-        self.entities:callAll('step')
+    if key == "+" then
+        self.speedUp = self.speedUp * 2
     end
+    if key == "-" then
+        self.speedUp = self.speedUp * 0.5
+    end
+    
     if key == 'f1' then
         love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
     end
