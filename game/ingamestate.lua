@@ -266,8 +266,26 @@ function InGameState:dragTarget()
     if length > max_length then
         d = mathhelpers.scale(d, max_length/length)
     end
+    x, y = self:roundPosition(d.x, d.y)
+    d = {x=x, y=y}
+    if mathhelpers.length(d) > max_length then
+        local ox, oy = 1, 1
+        if d.x > 0 then
+            ox = -1
+        end
+        if d.y > 0 then
+            oy = -1
+        end
+        if mathhelpers.length({x=d.x+ox, y=d.y}) <= max_length then
+            d.x = d.x + ox
+        elseif mathhelpers.length({x=d.x, y=d.y+oy}) <= max_length then
+            d.y = d.y + oy
+        else
+            d.x, d.y = d.x +ox, d.y + oy
+        end
+    end
     local e = mathhelpers.add(d, self.drag.start)
-    return self:roundPosition(e.x, e.y)
+    return e.x, e.y
 end
 
 

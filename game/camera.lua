@@ -99,7 +99,7 @@ function Camera:boundingBox()
 end
 
 function Camera:wheelmoved(_, y)
-    self.gridPerHeight = clamp(8, self.gridPerHeight +- y, 30)
+    self.gridPerHeight = clamp(8, self.gridPerHeight - y, 30)
     self.zoom = love.graphics.getHeight() / self.gridPerHeight
 end
 
