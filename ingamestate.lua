@@ -4,7 +4,7 @@ local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
 local EventBus = require 'EventBus'
-local Transform = require 'Transform'
+local Camera = require 'camera'
 local Grid = require 'Grid'
 local PowerLine = require 'powerline'
 
@@ -14,12 +14,18 @@ function InGameState:init()
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
     self.player = Player:new(self.eventBus);
+    self.camera = Camera:new();
     self.grid = Grid:new()
 
+ 
     self.drag = {
         mode= 'off',
     }
+    -- 'global' objects
     self:insertEntity(self.player)
+    self:insertEntity(self.camera)
+
+    -- start entities
 
     local terraformer = TerraFormer:new(self.eventBus, 2, 2)
     self:insertEntity(terraformer)
@@ -35,15 +41,8 @@ function InGameState:insertEntity(entity)
 end
 
 function InGameState:draw()
-    local w = love.graphics:getWidth()
     local h = love.graphics:getHeight()
-    love.graphics.origin()
-
-    -- Origin to lower-left corner
-    local Camera = Transform:scale(1, -1):multiply(Transform:translate(0, -h):multiply(Transform:scale(25, 25)))
-
-    love.graphics.translate(Camera.dx, Camera.dy)
-    love.graphics.scale(Camera.sx, Camera.sy)
+    self.camera:setup()
 
     -- Scale everything up
     love.graphics.setBlendMode("replace")
