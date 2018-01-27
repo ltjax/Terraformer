@@ -17,8 +17,12 @@ function Player:draw()
     love.graphics.pop()
 end
 
+function Player:has_minerals(num_minerals)
+    return num_minerals <= self.minerals
+end
+
 function Player:use_minerals(num_minerals)
-    if self.minerals < num_minerals then
+    if not self:has_minerals(num_minerals) then
         return false
     end
     self.minerals = self.minerals - num_minerals
