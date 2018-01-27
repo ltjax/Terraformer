@@ -7,6 +7,7 @@ local EventBus = require 'EventBus'
 local Camera = require 'camera'
 local Grid = require 'Grid'
 local PowerLine = require 'powerline'
+local HudBuilding = require 'hud_building'
 
 local InGameState = {}
 
@@ -16,16 +17,18 @@ function InGameState:init()
     self.player = Player:new(self.eventBus);
     self.grid = Grid:new()
     self.camera = Camera:new();
+    self.hud_building = HudBuilding:new(self)
 
     self.drag = {
         mode= 'off',
     }
     self:insertEntity(self.player)
     self:insertEntity(self.camera)
+    self:insertEntity(self.hud_building)
 
     local terraformer = TerraFormer:new(self.eventBus, 7, 14)
-    local node = Node:new(5, 10)
-    local powerPlant = PowerPlant:new(2, 11)
+    local node = Node:new(nil, 5, 10)
+    local powerPlant = PowerPlant:new(nil, 2, 11)
     self:insertBuilding(terraformer)
     self:insertBuilding(node)
     self:insertBuilding(powerPlant)
@@ -41,6 +44,15 @@ end
 function InGameState:insertBuilding(building)
   self:insertEntity(building)
   self.grid:set(building.position.x, building.position.y, building)
+end
+
+function InGameState:createBuilding(building_class, x, y)
+    if self.grid:get(x, y) == nil then
+        local building = building_class:new(self.eventBus, x, y)
+        self:insertBuilding(building)
+        return building
+    end
+    return nil
 end
 
 function InGameState:draw()
@@ -78,20 +90,10 @@ function InGameState:update(dt)
     self.entities:callAll('update', dt)
 end
 
-function InGameState:newBuildingFor(key, posx, posy)
-    if key == "q" then
-        return TerraFormer:new(self.eventBus, posx, posy)
+function InGameState:mousepressed(x, y, button)
+    if self.hud_building:mousepressed(x, y, button) then
+        return
     end
-    if key == "w" then
-        return Node:new(posx, posy)
-    end
-    if key == "e" then
-        return PowerPlant:new(posx, posy)
-    end
-    return nil
-end
-
-function InGameState:mousepressed()
     local x, y = self:mouseGridPosition()
     if self.grid:get(x, y)~=nil then
         self.drag.start = {x=x, y=y}
@@ -132,25 +134,14 @@ function InGameState:mouseGridPosition()
 end
 
 function InGameState:keypressed(key)
-  local posx, posy = self:mouseGridPosition()
-  
-  if key == "escape" then
-      love.event.quit()
-  end
-  if key == "space" then
-      self.entities:callAll('step')
-  end
+    local posx, posy = self:mouseGridPosition()
 
-  if self.grid:get(posx, posy) then
-      return
-  end
-
-  local building = self:newBuildingFor(key, posx, posy)
-  if not building then
-      return
-  end
-
-  self:insertBuilding(building)
+    if key == "escape" then
+        love.event.quit()
+    end
+    if key == "space" then
+        self.entities:callAll('step')
+    end
 end
 
 function InGameState:wheelmoved(x, y)

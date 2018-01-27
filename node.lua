@@ -1,7 +1,7 @@
 local class = require "middleclass"
 local Node = class "Node"
 
-function Node:initialize(posx, posy)
+function Node:initialize(_, posx, posy)
   self.position = {x = posx, y = posy}
 end
 
@@ -21,6 +21,7 @@ function Node:draw()
   love.graphics.pop();
 end
 
+Node.mineral_cost = 20
 Node.energy_cost = 10
 Node.edge_length = 0.25
 

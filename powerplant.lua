@@ -4,7 +4,7 @@ local Powerplant = class "Powerplant"
 Powerplant.mineral_cost = 400
 Powerplant.energy_produced_per_step = 50
 
-function Powerplant:initialize(x, y)
+function Powerplant:initialize(_, x, y)
     self.position = {x = x, y = y}
 end
 

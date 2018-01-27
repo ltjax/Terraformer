@@ -25,6 +25,7 @@ function TerraFormer:step()
     self.eventBus:dispatch(messages.minerals_produced(5))
 end
 
+TerraFormer.mineral_cost = 100
 TerraFormer.energy_cost = 10
 TerraFormer.segments = 100
 
