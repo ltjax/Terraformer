@@ -27,7 +27,6 @@ function Mine:drawOverlay(camera)
     love.graphics.setBlendMode('alpha')
     drawCentered(Mine.image, self.position.x, self.position.y)
     love.graphics.pop()
-    camera:drawText(mathhelpers.percentagestring(self.generated / Mine.mine_pack) .. " " .. tostring(self.energy), self.position.x, self.position.y)
 end
 
 function Mine:update(dt)

@@ -58,8 +58,6 @@ function TerraFormer:drawOverlay(camera)
         love.graphics.circle("line", self.position.x, self.position.y, self.active_radius, TerraFormer.segments)
     end
   love.graphics.pop();
-  local p = (self.active_radius - TerraFormer.shield_radius_min) / (TerraFormer.shield_radius_max - TerraFormer.shield_radius_min)
-  camera:drawText(mathhelpers.percentagestring(p), self.position.x, self.position.y)
 end
 
 function TerraFormer:drawBackground()
