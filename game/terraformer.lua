@@ -5,8 +5,8 @@ local EnergyTransmitter = require 'energytransmitter'
 local TerraFormer = class("TerraFormer", EnergyTransmitter)
 local messages = require "messages"
 
-TerraFormer.static.max_energy = 40
-TerraFormer.static.energy_cost = 0.4 -- per second
+TerraFormer.static.energy_cost = 0.7 -- per second
+TerraFormer.static.max_energy = TerraFormer.energy_cost * 10
 TerraFormer.static.segments = 100
 TerraFormer.static.mineral_cost = 100
 TerraFormer.static.shield_radius_increase = 0.5 -- per second
@@ -44,8 +44,10 @@ function TerraFormer:initialize(eventBus, posx, posy)
  
     local vertexSrc = [[
         vec4 position( mat4 transform_projection, vec4 vertex_position )
-        {
-            return transform_projection * vertex_position;
+        {   
+            vec4 clipspace = transform_projection * vertex_position;
+            clipspace.y *= -1.0;
+            return clipspace;
         }
     ]]
 
@@ -59,8 +61,10 @@ function TerraFormer:drawOverlay(camera)
     love.graphics.setColor(180, 255, 180, 255)
     love.graphics.setBlendMode('alpha')
     drawCentered(TerraFormer.image, x, y)
+    drawEnergyBar(self.position.x, self.position.y, self.energy / TerraFormer.max_energy, TerraFormer.energy_cost / TerraFormer.max_energy)
+
   love.graphics.pop();
-  camera:drawText(string.format("Energy: %.1f", self.energy), x, y)
+  --camera:drawText(string.format("Energy: %.1f", self.energy), x, y)
 end
 
 function TerraFormer:drawBackground(camera)
