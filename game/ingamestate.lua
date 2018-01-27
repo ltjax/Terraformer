@@ -129,15 +129,24 @@ end
 
 function InGameState:draw()
     local h = love.graphics:getHeight()
-    self.camera:setup()
 
     love.graphics.setFont(constants.NORMAL_FONT)
     -- Scale everything up
-    love.graphics.setBlendMode("replace")
-    
-    self.entities:callAll('drawBackground')
-    
-    self:drawBackgroundTiles()    
+    local canvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight());
+    love.graphics.setCanvas(canvas)
+    self.camera:setup()
+    love.graphics.clear()
+    self.entities:callAll('drawBackground', self.camera)
+    love.graphics.setCanvas()
+
+    love.graphics.origin()
+    love.graphics.scale(1, -1)
+    love.graphics.translate(0, -love.graphics.getHeight())
+    love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.draw(canvas)
+
+    self.camera:setup()
+    self:drawBackgroundTiles()
 
     -- Draw simple grid
     local b0, b1 = self.camera:boundingBox()

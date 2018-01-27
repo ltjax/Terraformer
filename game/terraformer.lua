@@ -13,6 +13,8 @@ TerraFormer.static.shield_radius_increase = 0.5 -- per second
 TerraFormer.static.shield_radius_min = 2
 TerraFormer.static.shield_radius_max = 8
 TerraFormer.static.image = love.graphics.newImage('terraformer.png')
+TerraFormer.static.noise_texture = love.graphics.newImage('fractal_noise.png')
+TerraFormer.noise_texture:setWrap("repeat", "repeat")
 
 function TerraFormer:initialize(eventBus, posx, posy)
     EnergyTransmitter.initialize(self)
@@ -24,15 +26,19 @@ function TerraFormer:initialize(eventBus, posx, posy)
     self.eventBus = eventBus
 
     local fragSrc =  [[
+        uniform vec2 gridCenter;
+        uniform vec2 camPosition;
+        uniform float camZoom;
+        uniform float maxRadius;
+        uniform vec2 windowSize;
+        uniform sampler2D perlin;
+
         vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords )
         {
-            vec4 texcolor = Texel(texture, texture_coords);
-            vec4 c = color;
-            
-            if(length(texture_coords) > 0.5)
-              c = vec4(1.0, 1.0, 0.0, 1.0);
-            
-            return vec4(gl_FragCoord.xy, 0.0, 1.0);
+            vec2 gridFrag = gl_FragCoord.xy / camZoom + camPosition;    
+            vec4 noise = Texel(perlin, vec2(gridFrag * 0.45));
+            float opacity = smoothstep(maxRadius, maxRadius - 8, length(gridFrag - gridCenter));
+            return vec4(color.rgb, step(0.5, noise.r * 0.45 + opacity));
         }
     ]]
  
@@ -44,30 +50,29 @@ function TerraFormer:initialize(eventBus, posx, posy)
     ]]
 
     self.shader = love.graphics.newShader(fragSrc, vertexSrc);
-
+    self.shader:send("gridCenter", { self.position.x, self.position.y })
 end
 
 function TerraFormer:drawOverlay(camera)
     local x, y = self.position.x, self.position.y
-    
     love.graphics.push()
     love.graphics.setColor(180, 255, 180, 255)
     love.graphics.setBlendMode('alpha')
     drawCentered(TerraFormer.image, x, y)
-
-    if self.active and self.active_radius < TerraFormer.shield_radius_max then
-        love.graphics.setLineWidth(0.05);
-        love.graphics.setColor(0, 255, 0, 150)
-        love.graphics.circle("line", self.position.x, self.position.y, self.active_radius, TerraFormer.segments)
-    end
   love.graphics.pop();
   camera:drawText(string.format("Energy: %.1f", self.energy), x, y)
 end
 
-function TerraFormer:drawBackground()
+function TerraFormer:drawBackground(camera)
     if not self.active then
         return
     end
+    self.shader:send("camPosition", { camera.position.x, camera.position.y })
+    self.shader:send("camZoom", camera.zoom )
+    self.shader:send("maxRadius", self.active_radius)
+    self.shader:send("perlin", TerraFormer.static.noise_texture)
+
+    love.graphics.getBlendMode("alpha")
     love.graphics.setShader(self.shader)
     love.graphics.push()
         love.graphics.setColor(0, 255, 0, 50)

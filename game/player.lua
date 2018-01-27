@@ -8,6 +8,7 @@ function Player:initialize(eventBus)
         self.minerals = self.minerals + message.added_minerals
         self.mineralBump = math.min(1.0, self.mineralBump + 0.3)
     end)
+    
     eventBus:subscribe(messages.TOTAL_TERRAFORMED_CHANGED, function (message)
             self.score = message.total
             if message.delta > 0 then
@@ -15,11 +16,12 @@ function Player:initialize(eventBus)
             end
         end)
         
-    self.minerals = 50
+    self.minerals = 500
     self.mineralBump = 0.0
     self.score = 0
     self.scoreBump = 0.0
 end
+
 
 function Player:draw()
     local s = 1.0 + self.mineralBump * self.mineralBump * 0.8
