@@ -7,8 +7,9 @@ Node.static.max_energy_storage = 50
 Node.static.max_energy_output = 25
 Node.static.energy_cost = 10
 Node.static.edge_length = 0.25
+Node.static.mineral_cost = 20
 
-function Node:initialize(posx, posy)
+function Node:initialize(_, posx, posy)
     EnergyTransmitter.initialize(self)
     self.position = {x = posx, y = posy }
     self.energy = 0

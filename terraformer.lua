@@ -7,6 +7,7 @@ local messages = require "messages"
 TerraFormer.static.max_energy = 30
 TerraFormer.static.energy_cost = 10
 TerraFormer.static.segments = 100
+TerraFormer.static.mineral_cost = 100
 
 function TerraFormer:initialize(eventBus, posx, posy)
     EnergyTransmitter.initialize(self)

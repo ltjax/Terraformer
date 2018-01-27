@@ -6,7 +6,7 @@ local Powerplant = class("Powerplant", EnergyTransmitter)
 Powerplant.mineral_cost = 400
 Powerplant.energy_produced_per_step = 50
 
-function Powerplant:initialize(x, y)
+function Powerplant:initialize(_, x, y)
     EnergyTransmitter.initialize(self)
     self.position = {x = x, y = y}
     self.connections = {}
@@ -22,7 +22,6 @@ end
 function Powerplant:potential()
     return 1
 end
-
 
 function Powerplant:output()
     return Powerplant.energy_produced_per_step
