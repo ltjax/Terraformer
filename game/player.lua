@@ -3,7 +3,7 @@ local Player = class "Player"
 local messages = require "messages"
 local constants = require 'constants'
 
-function Player:initialize(eventBus)
+function Player:initialize(eventBus, goals)
     eventBus:subscribe(messages.MINERALS_PRODUCED, function (message)
         self.minerals = self.minerals + message.added_minerals
         self.mineralBump = math.min(1.0, self.mineralBump + 0.3)
@@ -20,6 +20,7 @@ function Player:initialize(eventBus)
     self.mineralBump = 0.0
     self.score = 0
     self.scoreBump = 0.0
+    self.goals = goals
 end
 
 
@@ -49,7 +50,15 @@ function Player:update(dt)
         self.scoreBump = math.max(0, self.scoreBump - 0.7*dt)
     end
     
+    self:checkGoals()
 end
+
+function Player:checkGoals()
+    if not self.goals then
+        return
+    end
+end
+
 
 function Player:has_minerals(num_minerals)
     return num_minerals <= self.minerals

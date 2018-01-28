@@ -3,16 +3,24 @@ local constants = require 'constants'
 local class = require 'middleclass'
 local mainMenu = {}
 
+-- TODO: Should probably go to a missions module
+local TerraFormer = require "terraformer"
+local Node = require "node"
+local PowerPlant = require "powerplant"
+local Mine = require "mine"
+
 local FADE_IN_TIME = 1.3
 
 local MissionButton = class 'MissionButton'
 
-function MissionButton:initialize(w, h, text)
+function MissionButton:initialize(w, h, text, setup, goals)
     self.x = 0
     self.y = 0
     self.width = w
     self.height = h
     self.text = text
+    self.setup = setup
+    self.goals = goals
 end
 
 function MissionButton:setPosition(x, y)
@@ -34,16 +42,44 @@ end
 function mainMenu:init()
     self.image = love.graphics.newImage("logo.png")
     
+    -- TODO: Should probably go to a missions module
     
     local buttonWidth = 140
     local buttonHeight = 40
-    local mission0 = "Expand to 1000 hectare in 5 days!"
+    local mission0 = "Expand to 1000 hectare in 5 minutes!"
+    local missionSetup = function(game)
+        local terraformer = TerraFormer:new(game.eventBus, 7, 14)
+        local node = Node:new(game.eventBus, 5, 10)
+        local powerPlant = PowerPlant:new(game.eventBus, 2, 11)
+        local mine = Mine:new(game.eventBus, 6, 7)
+        game:insertBuilding(terraformer)
+        game:insertBuilding(node)
+        game:insertBuilding(powerPlant)
+        game:insertBuilding(mine)
+        
+        game:connectLine(terraformer, node)
+        game:connectLine(powerPlant, node)
+        game:connectLine(mine, node)
+    end
+    local missionGoals0 = {
+        timeLimit=300,
+        hectare=1000
+    }
+    
     local mission1 = "Grow to over 9000 hectare!"
+    local missionGoals1 = {
+        hectare=9000
+    }
+    
     local mission2 = "Get 10000 minerals rich!"
+    local missionGoals2 = {
+        minerals=10000
+    }
+    
     self.buttons = {
-        MissionButton:new(buttonWidth, buttonHeight, mission0),
-        MissionButton:new(buttonWidth, buttonHeight, mission1),
-        MissionButton:new(buttonWidth, buttonHeight, mission2)
+        MissionButton:new(buttonWidth, buttonHeight, mission0, missionSetup, missionGoals0),
+        MissionButton:new(buttonWidth, buttonHeight, mission1, missionSetup, missionGoals1),
+        MissionButton:new(buttonWidth, buttonHeight, mission2, missionSetup, missionGoals2)
         }
 end
 
@@ -113,7 +149,7 @@ function mainMenu:mousepressed(x, y, button)
     end
     for _, button in ipairs(self.buttons) do
         if button:contains(x,y) then
-            Gamestate.switch(require "ingamestate")
+            Gamestate.switch(require "ingamestate", button.setup, button.goals)
         end
     end
 end

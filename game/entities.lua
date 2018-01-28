@@ -10,6 +10,12 @@ function Entities:add(entity)
   table.insert(self.list, entity)
 end
 
+function Entities:forEach(callback)
+    for _, entity in ipairs(self.list) do
+        callback(entity)
+    end
+end
+
 function Entities:callAll(functionName, ...)
   for _, entity in ipairs(self.list) do
     local f = entity[functionName]

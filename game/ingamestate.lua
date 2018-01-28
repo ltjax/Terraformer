@@ -1,4 +1,5 @@
 local Entities = require 'entities'
+local Gamestate = require 'gamestate'
 local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
@@ -27,10 +28,10 @@ InGameState.assets = {
 InGameState.assets.ambient_forest:setLooping(true)
 InGameState.assets.ambient_wind:setLooping(true)
 
-function InGameState:init()
+function InGameState:enter(previous, setupFunction, goals)
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
-    self.player = Player:new(self.eventBus);
+    self.player = Player:new(self.eventBus, goals);
     self.grid = Grid:new()
     self.resources = resources:new()
     self.camera = Camera:new();
@@ -56,22 +57,21 @@ function InGameState:init()
     self:insertEntity(self.hud_building)
     self:insertEntity(self.resources)
 
-    local terraformer = TerraFormer:new(self.eventBus, 7, 14)
-    terraformer.energy = 5
-    terraformer.active_radius = TerraFormer.shield_radius_max
-    self.terraformedGrid:radiusChanged(terraformer)
-    local node = Node:new(nil, 5, 10)
-    local powerPlant = PowerPlant:new(nil, 2, 11)
-    local mine = Mine:new(self.eventBus, 6, 7)
-    self.resources:set(mine.position.x, mine.position.y, resources.type.METAL)
-    self:insertBuilding(terraformer)
-    self:insertBuilding(node)
-    self:insertBuilding(powerPlant)
-    self:insertBuilding(mine)
+    if setupFunction then
+        setupFunction(self)
+    end
     
-    self:connectLine(terraformer, node)
-    self:connectLine(powerPlant, node)
-    self:connectLine(mine, node)
+    
+    self.entities:forEach(function(entity)
+        if entity:isInstanceOf(TerraFormer) then
+            entity.energy = TerraFormer.max_energy
+            entity.active_radius = TerraFormer.shield_radius_max
+            self.terraformedGrid:radiusChanged(entity)
+        end
+        if entity:isInstanceOf(Mine) then
+            self.resources:set(entity.position.x, entity.position.y, resources.type.METAL)
+        end
+    end)
 end
 
 function InGameState:insertEntity(entity)
@@ -315,7 +315,7 @@ function InGameState:keypressed(key)
     local posx, posy = self:mouseGridPosition()
 
     if key == "escape" then
-        love.event.quit()
+        Gamestate.switch(require 'mainmenu')
     end
     if key == "e" then
         self.speedUp = self.speedUp * 2
