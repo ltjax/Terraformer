@@ -99,10 +99,15 @@ end
 function InGameState:drawBackgroundTiles()
     love.graphics.setBlendMode("alpha")
     love.graphics.setColor(255, 255, 255, 200)
+    local b0, b1 = self.camera:boundingBox()
     local tileSize = 50
-    for by=-1,0 do
-        for bx=-1,0 do
-            love.graphics.draw(self.background, bx*tileSize, by*tileSize, 0,tileSize/self.background:getWidth(), tileSize/self.background:getHeight())
+    b0, b1 = mathhelpers.scale(b0, 1 / tileSize), mathhelpers.scale(b1, 1 / tileSize)
+    b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
+    b0, b1 = mathhelpers.scale(b0, tileSize), mathhelpers.scale(b1, tileSize)
+
+    for bx=b0.x,b1.x,tileSize do
+        for by=b0.y,b1.y,tileSize do
+            love.graphics.draw(self.background, bx, by, 0,tileSize/self.background:getWidth(), tileSize/self.background:getHeight())
         end
     end
 end
