@@ -23,8 +23,7 @@ function Player:initialize(eventBus, goals)
     self.goals = goals
 end
 
-
-function Player:draw()
+function Player:drawHud()
     local s = 1.0 + self.mineralBump * self.mineralBump * 0.8
     local t = 1.0 + self.scoreBump * self.scoreBump * 0.8
     love.graphics.push()

@@ -1,9 +1,10 @@
 local class = require "middleclass"
 local HudBuilding = class "HudBuilding"
 
+local Node = require "node"
 local buildings = {
     require "terraformer",
-    require "node",
+    Node,
     require "powerplant",
     require "mine",
 }
@@ -20,7 +21,7 @@ function HudBuilding:initialize(ingamestate)
     self.placement = nil
 end
 
-function HudBuilding:draw()
+function HudBuilding:drawHud()
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setBlendMode("alpha")
@@ -58,6 +59,23 @@ function HudBuilding:draw_placement()
         love.graphics.setColor(0, 128, 0)
     end
     love.graphics.circle("fill", x, y, 0.7)
+    if self.placement == Node then
+        local c = 0.5
+        love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
+        local max_length = 7 -- see InGameState:dragTarget
+        for ox = -max_length, max_length do
+            for oy = -max_length, max_length do
+                if math.sqrt(ox^2 + oy^2) <= max_length then
+                    local tx = x + ox
+                    local ty = y + oy
+                    local t = self.ingamestate.grid:get(tx, ty)
+                    if t~=nil and t:isInstanceOf(Node) then
+                        love.graphics.line(x, y, tx, ty)
+                    end
+                end
+            end
+        end
+    end
     love.graphics.pop()
 end
 
