@@ -9,16 +9,17 @@ function drawEnergyBar(x, y, percentage, critical)
     if percentage < 0.01 then
         return
     end
+    local w = 0.1
     
     local barX, barY = x+0.51, y-0.5
-    love.graphics.setColor(0, 64, 0, 64)
-    love.graphics.rectangle('fill', barX, barY, 0.1, 1)
+    love.graphics.setColor(255, 255, 255, 128)
+    love.graphics.rectangle('fill', barX, barY, w, 1)
     if percentage < critical then
-        love.graphics.setColor(64, 0, 0, 200)
+        love.graphics.setColor(255, 0, 0, 128)
     else
-        love.graphics.setColor(0, 32, 0, 64)
+        love.graphics.setColor(0, 255, 0, 128)
     end
-    love.graphics.rectangle('fill', barX, barY, 0.1, percentage)
+    love.graphics.rectangle('fill', barX, barY, w, percentage)
 
 end
 

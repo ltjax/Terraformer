@@ -63,7 +63,7 @@ function HudBuilding:draw_placement()
     else
         love.graphics.setColor(0, 128, 0)
     end
-    love.graphics.circle("fill", x, y, 0.7)
+    love.graphics.circle("fill", x, y, 0.3, 16)
     if self.placement == Node then
         local c = 0.5
         love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
