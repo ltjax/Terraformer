@@ -3,6 +3,7 @@ local messages = require 'messages'
 local Grid = require 'grid'
 local mathhelpers = require 'mathhelpers'
 local TerraFormer = require 'terraformer'
+local Set = require 'set'
 
 local function isInside(terraformer, x, y)
     -- Special case for clean destruction of terraformers
@@ -12,35 +13,6 @@ local function isInside(terraformer, x, y)
     
     local dist = mathhelpers.distance(terraformer.position, {x=x, y=y})
     return dist <= terraformer.active_radius
-end
-
-local Set = class 'Set'
-function Set:initialize()
-    self.count = 0
-    self.table = {}
-end
-
-function Set:contains(element)
-    return self.table[element]~=nil
-end
-
-function Set:insert(element)
-    if self:contains(element) then
-        return
-    end
-    self.count = self.count + 1
-    self.table[element] = true
-end
-
-function Set:remove(element)
-    if self:contains(element) then
-        self.table[element] = nil
-        self.count = self.count - 1
-    end
-end
-
-function Set:size()
-    return self.count
 end
 
 
