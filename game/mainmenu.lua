@@ -60,21 +60,23 @@ function mainMenu:init()
         game:connectLine(powerPlant, node)
         game:connectLine(mine, node)
     end
-    local mission0 = "Expand to 500 hectare in 5 minutes!"
     local missionGoals0 = {
         timeLimit=300,
-        hectare=500
+        hectare=750
     }
+    local mission0 = string.format("Expand to %.0f hectare in %.0f minutes!",
+        missionGoals0.hectare, missionGoals0.timeLimit / 60)
     
-    local mission1 = "Grow to over 2000 hectare!"
     local missionGoals1 = {
-        hectare=2000
+        hectare=3000
     }
+    local mission1 = string.format("Grow to over %.0f hectare!", missionGoals1.hectare)
+
     
-    local mission2 = "Get 10000 minerals rich!"
     local missionGoals2 = {
         minerals=10000
     }
+    local mission2 = string.format("Get %.0f minerals rich!", missionGoals2.minerals)
     
     self.buttons = {
         MissionButton:new(buttonWidth, buttonHeight, mission0, missionSetup, missionGoals0),

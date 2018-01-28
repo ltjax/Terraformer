@@ -5,7 +5,7 @@ local EnergyTransmitter = require 'energytransmitter'
 local Powerplant = class("Powerplant", EnergyTransmitter)
 
 Powerplant.static.mineral_cost = 400
-Powerplant.static.energy_produced_per_second = 2.5
+Powerplant.static.energy_produced_per_second = 5.0
 Powerplant.static.image = love.graphics.newImage('powerplant.png')
 
 function Powerplant:initialize(_, x, y)

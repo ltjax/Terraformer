@@ -55,7 +55,7 @@ function Powerline:update(dt)
     while self.time > math.pi*2 do
       self.time = self.time - math.pi*2
     end
-    local move = 10*dt/self.length
+    local move = 20*dt/self.length
     self:updateLane(move, self.a, self.toA)
     self:updateLane(move, self.b, self.toB)
 end
