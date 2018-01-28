@@ -5,6 +5,7 @@ local TerraFormer = require "terraformer"
 local Node = require "node"
 local PowerPlant = require "powerplant"
 local Mine = require "mine"
+local EnergyTransmitter = require "energytransmitter"
 local EventBus = require 'eventbus'
 local Camera = require 'camera'
 local Grid = require 'grid'
@@ -40,6 +41,8 @@ function InGameState:enter(previous, setupFunction, goals)
     self.background = love.graphics.newImage('background.png')
     self.terraformedGrid = TerraformedGrid:new(self.eventBus)
     self.forest_volume = 1
+    self.lctrl = false
+    self.rctrl = false
 
     self.drag = {
         mode= 'off',
@@ -76,6 +79,10 @@ function InGameState:insertEntity(entity)
     self.entities:add(entity)
 end
 
+function InGameState:removeEntity(entity)
+    self.entities:remove(entity)
+end
+
 function InGameState:insertBuilding(building)
   self:insertEntity(building)
   self.grid:set(building.position.x, building.position.y, building)
@@ -94,6 +101,30 @@ function InGameState:createBuilding(building_class, x, y)
     self.camera:addTrauma(0.2)
     InGameState.assets.building_placement:play()
     return building
+end
+
+function InGameState:destroyUnderMouse()
+    local posx, posy = self:mouseGridPosition()
+    if self:destroyAt(posx, posy) then
+        -- todo: play sound
+        return
+    end
+    -- todo check for powerlines
+end
+function InGameState:destroyAt(posx, posy)
+    local building = self.grid:get(posx, posy)
+    if building == nil then
+        return false
+    end
+    self:destroyBuilding(building)
+    return true
+end
+function InGameState:destroyBuilding(building)
+    if building:isInstanceOf(EnergyTransmitter) then
+        building:disconnectAll()
+    end
+    self.grid:set(building.position.x, building.position.y, nil)
+    self:removeEntity(building)
 end
 
 function InGameState:drawBackgroundTiles()
@@ -244,7 +275,12 @@ function InGameState:mousepressed(x, y, button)
     if button ~= 1 then
         return
     end
-    
+
+    if self:ctrl() then
+        self:destroyUnderMouse()
+        return
+    end
+
     local x, y = self:mouseGridPosition()
     if self.grid:get(x, y)~=nil then
         self.drag.start = {x=x, y=y}
@@ -307,7 +343,7 @@ function InGameState:mousereleased()
 end
 
 function InGameState:connectLine(startTarget, endTarget)
-    self:insertEntity(PowerLine:new(startTarget, endTarget))
+    self:insertEntity(PowerLine:new(self, startTarget, endTarget))
 end
 
 function InGameState:unroundedMousePosition()
@@ -338,10 +374,28 @@ function InGameState:keypressed(key)
     if key == "q" then
         self.player:decreaseSpeed()
     end
-    
+    if key == "rctrl" then
+        self.rctrl = true
+    end
+    if key == "lctrl" then
+        self.lctrl = true
+    end
     if key == 'f1' then
         love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
     end
+end
+
+function InGameState:keyreleased(key)
+    if key == "rctrl" then
+        self.rctrl = false
+    end
+    if key == "lctrl" then
+        self.lctrl = false
+    end
+end
+
+function InGameState:ctrl()
+    return self.rctrl or self.lctrl
 end
 
 function InGameState:wheelmoved(x, y)
