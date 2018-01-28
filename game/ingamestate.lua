@@ -1,4 +1,5 @@
 local Entities = require 'entities'
+local Gamestate = require 'gamestate'
 local Player = require "player"
 local TerraFormer = require "terraformer"
 local Node = require "node"
@@ -27,10 +28,10 @@ InGameState.assets = {
 InGameState.assets.ambient_forest:setLooping(true)
 InGameState.assets.ambient_wind:setLooping(true)
 
-function InGameState:init()
+function InGameState:enter(previous, setupFunction, goals)
     self.eventBus = EventBus:new()
     self.entities = Entities:new()
-    self.player = Player:new(self.eventBus);
+    self.player = Player:new(self.eventBus, goals);
     self.grid = Grid:new()
     self.resources = resources:new()
     self.camera = Camera:new();
@@ -56,22 +57,21 @@ function InGameState:init()
     self:insertEntity(self.hud_building)
     self:insertEntity(self.resources)
 
-    local terraformer = TerraFormer:new(self.eventBus, 7, 14)
-    terraformer.energy = 5
-    terraformer.active_radius = TerraFormer.shield_radius_max
-    self.terraformedGrid:radiusChanged(terraformer)
-    local node = Node:new(nil, 5, 10)
-    local powerPlant = PowerPlant:new(nil, 2, 11)
-    local mine = Mine:new(self.eventBus, 6, 7)
-    self.resources:set(mine.position.x, mine.position.y, resources.type.METAL)
-    self:insertBuilding(terraformer)
-    self:insertBuilding(node)
-    self:insertBuilding(powerPlant)
-    self:insertBuilding(mine)
+    if setupFunction then
+        setupFunction(self)
+    end
     
-    self:connectLine(terraformer, node)
-    self:connectLine(powerPlant, node)
-    self:connectLine(mine, node)
+    
+    self.entities:forEach(function(entity)
+        if entity:isInstanceOf(TerraFormer) then
+            entity.energy = TerraFormer.max_energy
+            entity.active_radius = TerraFormer.shield_radius_max
+            self.terraformedGrid:radiusChanged(entity)
+        end
+        if entity:isInstanceOf(Mine) then
+            self.resources:set(entity.position.x, entity.position.y, resources.type.METAL)
+        end
+    end)
 end
 
 function InGameState:insertEntity(entity)
@@ -171,7 +171,7 @@ function InGameState:draw()
 
     self.entities:callAll('draw', self.camera)
     self.entities:callAll('drawOverlay', self.camera)
-    self.camera:drawTop()
+    self.entities:callAll('drawHud', self.camera)
 
     if self.drag.start and self.drag.stop then
         love.graphics.line(self.drag.start.x, self.drag.start.y, self.drag.stop.x, self.drag.stop.y)
@@ -266,8 +266,26 @@ function InGameState:dragTarget()
     if length > max_length then
         d = mathhelpers.scale(d, max_length/length)
     end
+    x, y = self:roundPosition(d.x, d.y)
+    d = {x=x, y=y}
+    if mathhelpers.length(d) > max_length then
+        local ox, oy = 1, 1
+        if d.x > 0 then
+            ox = -1
+        end
+        if d.y > 0 then
+            oy = -1
+        end
+        if mathhelpers.length({x=d.x+ox, y=d.y}) <= max_length then
+            d.x = d.x + ox
+        elseif mathhelpers.length({x=d.x, y=d.y+oy}) <= max_length then
+            d.y = d.y + oy
+        else
+            d.x, d.y = d.x + ox, d.y + oy
+        end
+    end
     local e = mathhelpers.add(d, self.drag.start)
-    return self:roundPosition(e.x, e.y)
+    return e.x, e.y
 end
 
 
@@ -315,7 +333,7 @@ function InGameState:keypressed(key)
     local posx, posy = self:mouseGridPosition()
 
     if key == "escape" then
-        love.event.quit()
+        Gamestate.switch(require 'mainmenu')
     end
     if key == "e" then
         self.speedUp = self.speedUp * 2
