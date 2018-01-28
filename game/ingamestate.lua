@@ -38,8 +38,6 @@ function InGameState:enter(previous, setupFunction, goals)
     self.hud_building = HudBuilding:new(self)
     self.accumulated = 0.0
     self.background = love.graphics.newImage('background.png')
-    self.speedUp = 1
-    self.time = 0
     self.terraformedGrid = TerraformedGrid:new(self.eventBus)
     self.forest_volume = 1
 
@@ -101,10 +99,15 @@ end
 function InGameState:drawBackgroundTiles()
     love.graphics.setBlendMode("alpha")
     love.graphics.setColor(255, 255, 255, 200)
+    local b0, b1 = self.camera:boundingBox()
     local tileSize = 50
-    for by=-1,0 do
-        for bx=-1,0 do
-            love.graphics.draw(self.background, bx*tileSize, by*tileSize, 0,tileSize/self.background:getWidth(), tileSize/self.background:getHeight())
+    b0, b1 = mathhelpers.scale(b0, 1 / tileSize), mathhelpers.scale(b1, 1 / tileSize)
+    b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
+    b0, b1 = mathhelpers.scale(b0, tileSize), mathhelpers.scale(b1, tileSize)
+
+    for bx=b0.x,b1.x,tileSize do
+        for by=b0.y,b1.y,tileSize do
+            love.graphics.draw(self.background, bx, by, 0,tileSize/self.background:getWidth(), tileSize/self.background:getHeight())
         end
     end
 end
@@ -179,29 +182,13 @@ function InGameState:draw()
 
     love.graphics.push()
     love.graphics.origin()
-    local x,y = love.mouse.getPosition()
     --love.graphics.print(tostring(x) .. "|" .. tostring(h - y), 0, 0)
-    love.graphics.setBlendMode("alpha")
-    love.graphics.setFont(constants.BIG_FONT)
-    love.graphics.setColor(255, 255, 255, 128)
-    local timeString = string.format("%.1f", self.time)
-    if self.speedUp ~= 1 then
-        formatString = "%s (%.0fx)"
-        if self.speedUp < 1 then
-            formatString = "%s (%.2fx)"
-        end
-        
-        timeString = string.format(formatString, timeString, self.speedUp)
-    end
-    
-    love.graphics.print(timeString, love.graphics.getWidth() / 2, 0)
     love.graphics.pop()
 end
 
 function InGameState:update(dt)
     local frameTime = 1/30
-    dt = dt * self.speedUp
-    self.time = self.time + dt
+    dt = self.player:scaleTime(dt)
     self.entities:callAll('update', dt)
     self.accumulated = self.accumulated + dt
     while self.accumulated > frameTime do
@@ -346,10 +333,10 @@ function InGameState:keypressed(key)
         Gamestate.switch(require 'mainmenu')
     end
     if key == "e" then
-        self.speedUp = self.speedUp * 2
+        self.player:increaseSpeed()
     end
     if key == "q" then
-        self.speedUp = self.speedUp * 0.5
+        self.player:decreaseSpeed()
     end
     
     if key == 'f1' then

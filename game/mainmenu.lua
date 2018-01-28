@@ -155,7 +155,7 @@ function mainMenu:mousepressed(x, y, button)
 end
 
 
-function mainMenu:keypressed()
+function mainMenu:keypressed(key)
     if key == "escape" then
         love.event.quit()
     end
