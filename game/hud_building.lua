@@ -46,10 +46,15 @@ function HudBuilding:drawHud()
         y = y + Y_STEP
     end
     love.graphics.pop()
-    if self.placement then
+    if self:placing() then
         self:draw_placement()
     end
 end
+
+function HudBuilding:placing()
+    return self.placement ~= nil
+end
+
 function HudBuilding:draw_placement()
     local x, y = self.ingamestate:mouseGridPosition()
     love.graphics.push()
@@ -62,6 +67,7 @@ function HudBuilding:draw_placement()
     if self.placement == Node then
         local c = 0.5
         love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
+        love.graphics.setLineWidth(1 / 25)
         local max_length = 7 -- see InGameState:dragTarget
         for ox = -max_length, max_length do
             for oy = -max_length, max_length do

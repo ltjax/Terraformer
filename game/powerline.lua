@@ -5,7 +5,8 @@ local Powerline = class "Powerline"
 
 Powerline.static.max_energy = 40
 
-function Powerline:initialize(startBuilding, endBuilding)
+function Powerline:initialize(gs, startBuilding, endBuilding)
+    self.gs = gs
     self.time = 0
     self.a = startBuilding
     self.a:connect(self)
@@ -55,7 +56,7 @@ function Powerline:update(dt)
     while self.time > math.pi*2 do
       self.time = self.time - math.pi*2
     end
-    local move = 10*dt/self.length
+    local move = 20*dt/self.length
     self:updateLane(move, self.a, self.toA)
     self:updateLane(move, self.b, self.toB)
 end
@@ -91,6 +92,12 @@ function Powerline:transmitFrom(connector)
     local other, targetLane = self:otherFor(connector)
     connector:take(energy)
     table.insert(targetLane, 0.0)
+end
+
+function Powerline:destroy()
+    self.a:disconnect(self)
+    self.b:disconnect(self)
+    self.gs:removeEntity(self)
 end
 
 return Powerline

@@ -46,7 +46,6 @@ function mainMenu:init()
     
     local buttonWidth = 140
     local buttonHeight = 40
-    local mission0 = "Expand to 1000 hectare in 5 minutes!"
     local missionSetup = function(game)
         local terraformer = TerraFormer:new(game.eventBus, 7, 14)
         local node = Node:new(game.eventBus, 5, 10)
@@ -63,18 +62,21 @@ function mainMenu:init()
     end
     local missionGoals0 = {
         timeLimit=300,
-        hectare=1000
+        hectare=750
     }
+    local mission0 = string.format("Expand to %.0f hectare in %.0f minutes!",
+        missionGoals0.hectare, missionGoals0.timeLimit / 60)
     
-    local mission1 = "Grow to over 9000 hectare!"
     local missionGoals1 = {
-        hectare=9000
+        hectare=3000
     }
+    local mission1 = string.format("Grow to over %.0f hectare!", missionGoals1.hectare)
+
     
-    local mission2 = "Get 10000 minerals rich!"
     local missionGoals2 = {
         minerals=10000
     }
+    local mission2 = string.format("Get %.0f minerals rich!", missionGoals2.minerals)
     
     self.buttons = {
         MissionButton:new(buttonWidth, buttonHeight, mission0, missionSetup, missionGoals0),
@@ -158,6 +160,10 @@ end
 function mainMenu:keypressed(key)
     if key == "escape" then
         love.event.quit()
+    end
+    
+    if key == 'f1' then
+        love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
     end
 end
 

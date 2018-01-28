@@ -10,6 +10,15 @@ function Entities:add(entity)
   table.insert(self.list, entity)
 end
 
+function Entities:remove(entity)
+    for i, v in pairs(self.list) do
+        if v == entity then
+            table.remove(self.list, i)
+            break
+        end
+    end
+end
+
 function Entities:forEach(callback)
     for _, entity in ipairs(self.list) do
         callback(entity)
