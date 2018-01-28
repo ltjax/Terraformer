@@ -22,11 +22,14 @@ InGameState.assets = {
     ambient_forest = love.audio.newSource("sfx/forest.mp3"),
     ambient_wind = love.audio.newSource("sfx/wind.mp3"),
     building_placement = love.audio.newSource("sfx/building_placement.mp3", "static"),
-    not_enough_minerals = love.audio.newSource("sfx/not_enough_mins.mp3", "static")
+    not_enough_minerals = love.audio.newSource("sfx/insufficient_minerals.mp3", "static"),
+    music = love.audio.newSource("sfx/music.mp3")
 }
 
 InGameState.assets.ambient_forest:setLooping(true)
 InGameState.assets.ambient_wind:setLooping(true)
+InGameState.assets.music:setLooping(true)
+InGameState.assets.not_enough_minerals:setVolume(0.1)
 
 function InGameState:enter(previous, setupFunction, goals)
     self.eventBus = EventBus:new()
@@ -49,6 +52,8 @@ function InGameState:enter(previous, setupFunction, goals)
     InGameState.assets.ambient_wind:setVolume(0.0)
     InGameState.assets.ambient_forest:play()
     InGameState.assets.ambient_wind:play()
+    InGameState.assets.music:setVolume(0.1)
+    love.audio.play(InGameState.assets.music)
 
     self:insertEntity(self.player)
     self:insertEntity(self.camera)
