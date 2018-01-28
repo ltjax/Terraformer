@@ -46,7 +46,6 @@ function mainMenu:init()
     
     local buttonWidth = 140
     local buttonHeight = 40
-    local mission0 = "Expand to 1000 hectare in 5 minutes!"
     local missionSetup = function(game)
         local terraformer = TerraFormer:new(game.eventBus, 7, 14)
         local node = Node:new(game.eventBus, 5, 10)
@@ -61,14 +60,15 @@ function mainMenu:init()
         game:connectLine(powerPlant, node)
         game:connectLine(mine, node)
     end
+    local mission0 = "Expand to 500 hectare in 5 minutes!"
     local missionGoals0 = {
         timeLimit=300,
-        hectare=1000
+        hectare=500
     }
     
-    local mission1 = "Grow to over 9000 hectare!"
+    local mission1 = "Grow to over 2000 hectare!"
     local missionGoals1 = {
-        hectare=9000
+        hectare=2000
     }
     
     local mission2 = "Get 10000 minerals rich!"
@@ -158,6 +158,10 @@ end
 function mainMenu:keypressed(key)
     if key == "escape" then
         love.event.quit()
+    end
+    
+    if key == 'f1' then
+        love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
     end
 end
 
