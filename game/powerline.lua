@@ -89,6 +89,10 @@ function Powerline:otherFor(connector)
     return self.a, self.toA
 end
 
+function Powerline:isConnectedTo(connector)
+    return connector == self.a or connector == self.b
+end
+
 function Powerline:doesTransmitFrom(connector)
     return self:otherFor(connector):potential() < connector:potential()
 end

@@ -19,6 +19,15 @@ function Entities:remove(entity)
     end
 end
 
+function Entities:findIf(callback)
+    for _, entity in ipairs(self.list) do
+        if callback(entity) then
+            return entity
+        end
+    end
+    return nil
+end
+
 function Entities:forEach(callback)
     for _, entity in ipairs(self.list) do
         callback(entity)

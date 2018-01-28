@@ -364,7 +364,7 @@ function InGameState:mousereleased()
         local endTarget = self.grid:get(x, y)
         if endTarget~=nil then
             local startTarget = self.grid:get(self.drag.start.x, self.drag.start.y)
-            self:connectLine(startTarget, endTarget)
+            self:connectOrDisconnectLine(startTarget, endTarget)
         end
         self.drag.start = nil
         self.drag.mode = 'off'
@@ -375,6 +375,18 @@ end
 
 function InGameState:connectLine(startTarget, endTarget)
     self:insertEntity(PowerLine:new(self, startTarget, endTarget))
+end
+
+function InGameState:connectOrDisconnectLine(startTarget, endTarget)
+    local powerLine = self.entities:findIf(function(entity)
+        return entity:isInstanceOf(PowerLine) and entity:isConnectedTo(startTarget) and entity:isConnectedTo(endTarget)
+    end)
+
+    if powerLine ~= nil then
+        powerLine:destroy()
+    else
+        self:connectLine(startTarget, endTarget)
+    end
 end
 
 function InGameState:unroundedMousePosition()

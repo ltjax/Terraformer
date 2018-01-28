@@ -3,6 +3,7 @@ rm Terraformer.love || :
 zip -9 -r Terraformer.love .
 mv Terraformer.love ../
 cd ..
+cp Terraformer.love TerraformerSrc.zip
 cat love_windows/love.exe Terraformer.love > Terraformer.exe
 rm -R terraformer
 mkdir -p terraformer/

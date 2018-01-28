@@ -48,3 +48,7 @@ luac.out
 # Reaper
 *.reapeaks
 .DS_Store
+
+# Build artifacts
+/Terraformer.love
+/terraformer/
