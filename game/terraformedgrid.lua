@@ -4,7 +4,12 @@ local Grid = require 'grid'
 local mathhelpers = require 'mathhelpers'
 local TerraFormer = require 'terraformer'
 
-function isInside(terraformer, x, y)
+local function isInside(terraformer, x, y)
+    -- Special case for clean destruction of terraformers
+    if terraformer.active_radius == 0 then
+        return false
+    end
+    
     local dist = mathhelpers.distance(terraformer.position, {x=x, y=y})
     return dist <= terraformer.active_radius
 end

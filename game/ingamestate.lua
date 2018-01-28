@@ -137,6 +137,12 @@ function InGameState:destroyBuilding(building)
     if building:isInstanceOf(EnergyTransmitter) then
         building:disconnectAll()
     end
+    -- Make sure du adjust hectare
+    if building:isInstanceOf(TerraFormer) then
+        building.energy = TerraFormer.max_energy
+        building.active_radius = 0.0
+        self.terraformedGrid:radiusChanged(building)
+    end
     self.grid:set(building.position.x, building.position.y, nil)
     self:removeEntity(building)
 end
