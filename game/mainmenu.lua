@@ -46,11 +46,12 @@ function mainMenu:init()
     
     local buttonWidth = 140
     local buttonHeight = 40
+    local ox, oy = 6, 6
     local missionSetup = function(game)
-        local terraformer = TerraFormer:new(game.eventBus, 7, 14)
-        local node = Node:new(game.eventBus, 5, 10)
-        local powerPlant = PowerPlant:new(game.eventBus, 2, 11)
-        local mine = Mine:new(game.eventBus, 6, 7)
+        local terraformer = TerraFormer:new(game.eventBus, ox+math.random(1, 3), oy+math.random(1, 2))
+        local node = Node:new(game.eventBus, ox, oy)
+        local powerPlant = PowerPlant:new(game.eventBus, ox+math.random(-3, -1), oy+math.random(1, 2))
+        local mine = Mine:new(game.eventBus, ox+math.random(-1, 1), oy+math.random(-3, -1))
         game:insertBuilding(terraformer)
         game:insertBuilding(node)
         game:insertBuilding(powerPlant)
@@ -60,6 +61,25 @@ function mainMenu:init()
         game:connectLine(powerPlant, node)
         game:connectLine(mine, node)
     end
+    
+    local missionSetup0 = function(game)
+        local terraformer = TerraFormer:new(game.eventBus, ox+math.random(1, 3), oy+math.random(1, 2))
+        local node = Node:new(game.eventBus, ox, oy)
+        local powerPlant = PowerPlant:new(game.eventBus, ox+math.random(-3, -1), oy+math.random(1, 2))
+        local mine = Mine:new(game.eventBus, ox+math.random(-2, -1), oy+math.random(-3, -1))
+        local mine2 = Mine:new(game.eventBus, ox+math.random(1, 2), oy+math.random(-3, -1))
+        game:insertBuilding(terraformer)
+        game:insertBuilding(node)
+        game:insertBuilding(powerPlant)
+        game:insertBuilding(mine)
+        game:insertBuilding(mine2)
+        
+        game:connectLine(terraformer, node)
+        game:connectLine(powerPlant, node)
+        game:connectLine(mine, node)
+        game:connectLine(mine2, node)
+    end
+    
     local missionGoals0 = {
         timeLimit=300,
         hectare=750
@@ -79,8 +99,8 @@ function mainMenu:init()
     local mission2 = string.format("Get %.0f minerals rich!", missionGoals2.minerals)
     
     self.buttons = {
-        MissionButton:new(buttonWidth, buttonHeight, mission0, missionSetup, missionGoals0),
         MissionButton:new(buttonWidth, buttonHeight, mission1, missionSetup, missionGoals1),
+        MissionButton:new(buttonWidth, buttonHeight, mission0, missionSetup0, missionGoals0),
         MissionButton:new(buttonWidth, buttonHeight, mission2, missionSetup, missionGoals2)
         }
 end
