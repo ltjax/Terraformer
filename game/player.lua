@@ -39,23 +39,44 @@ function Player:decreaseSpeed()
 end
 
 function Player:drawHud()
-    local s = 1.0 + self.mineralBump * self.mineralBump * 0.8
-    local t = 1.0 + self.scoreBump * self.scoreBump * 0.8
     love.graphics.push()
     love.graphics.origin()
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.setFont(constants.BIG_FONT)
-    love.graphics.print(tostring(self.minerals), 10, 10, 0, s, s)
-    love.graphics.setFont(constants.NORMAL_FONT)
-    love.graphics.print("Minerals", 10, 40)
-    love.graphics.setFont(constants.BIG_FONT)
-    local x = love.graphics.getWidth() - 200
-    love.graphics.print(tostring(self.score), x, 10, 0, t, t)
-    love.graphics.setFont(constants.NORMAL_FONT)
-    love.graphics.print("Hectare", x, 40)
+    self:drawMinerals()
+    self:drawHectare()
     self:drawTime()
     love.graphics.pop()
 end
+
+function Player:drawMinerals()
+    local s = 1.0 + self.mineralBump * self.mineralBump * 0.8
+    local text = tostring(self.minerals)
+    if self.goals and self.goals.minerals then
+        text = text .. " / " .. tostring(self.goals.minerals)
+    end
+    
+    love.graphics.setFont(constants.BIG_FONT)
+    love.graphics.print(text, 10, 10, 0, s, s)
+    love.graphics.setFont(constants.NORMAL_FONT)
+    love.graphics.print("Minerals", 10, 40)
+end
+
+
+function Player:drawHectare()
+    local t = 1.0 + self.scoreBump * self.scoreBump * 0.8
+    local x = love.graphics.getWidth() - 200
+    love.graphics.setFont(constants.BIG_FONT)
+    
+    local text = tostring(self.score)
+    if self.goals and self.goals.hectare then
+        text = text .. " / " .. tostring(self.goals.hectare)
+    end
+        
+    love.graphics.print(text, x, 10, 0, t, t)
+    love.graphics.setFont(constants.NORMAL_FONT)
+    love.graphics.print("Hectare", x, 40)
+end
+
 
 function Player:drawTime()
     --love.graphics.setBlendMode("alpha")
@@ -70,6 +91,11 @@ function Player:drawTime()
         
         timeString = string.format(formatString, timeString, self.speedUp)
     end
+    
+    if self.goals and self.goals.timeLimit then
+        timeString = string.format("%s / %.0f", timeString, self.goals.timeLimit)
+    end
+    
     
     local x = love.graphics.getWidth() / 2 - 100
     love.graphics.print(timeString, x, 10)
