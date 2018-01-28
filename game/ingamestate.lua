@@ -83,6 +83,12 @@ function InGameState:enter(previous, setupFunction, goals)
     end)
 end
 
+function InGameState:leave()
+    InGameState.assets.ambient_forest:stop()
+    InGameState.assets.ambient_wind:stop()
+    InGameState.assets.music:stop()
+end
+
 function InGameState:insertEntity(entity)
     self.entities:add(entity)
 end
