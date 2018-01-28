@@ -50,4 +50,24 @@ function EnergyTransmitter:connect(powerLine)
     table.insert(self.connections, powerLine)
 end
 
+function EnergyTransmitter:disconnect(powerLine)
+    for i, v in pairs(self.connections) do
+        if v == powerLine then
+            table.remove(self.connections, i)
+            break
+        end
+    end
+end
+
+function EnergyTransmitter:disconnectAll()
+    local connections = self.connections
+    self.connections = {}
+    while #connections > 0 do
+        local c = table.remove(connections)
+        if c then
+            c:destroy(self)
+        end
+    end
+end
+
 return EnergyTransmitter

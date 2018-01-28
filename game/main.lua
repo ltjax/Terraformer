@@ -31,6 +31,8 @@ function love.load(arg)
     -- Enable debugging
     if arg[#arg] == "-debug" then
         require("mobdebug").start()
+    else
+        math.randomseed(os.time())
     end
 
     love.window.setTitle("Terraformer")

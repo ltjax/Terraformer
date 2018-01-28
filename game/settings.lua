@@ -2,7 +2,7 @@ local settings = {}
 
 settings.volume = 1.0
 settings.music_volume = 1.0
-settings.ambient_volume = 0.6
+settings.ambient_volume = 0.05
 
 
 function settings:musicVolume()

@@ -1,13 +1,17 @@
-
+local settings = require "settings"
 local Gamestate = require "gamestate"
 local constants = require 'constants'
 local winState = {}
+
+winState.success_audio = love.audio.newSource('sfx/success.mp3')
+winState.success_audio:setVolume(settings:musicVolume())
 
 function winState:init()
 end
 
 function winState:enter()
     love.graphics.setBackgroundColor(0, 0, 0, 255)
+    winState.success_audio:play()
 end
 
 
