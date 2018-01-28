@@ -24,13 +24,15 @@ InGameState.assets = {
     ambient_wind = love.audio.newSource("sfx/wind.mp3"),
     building_placement = love.audio.newSource("sfx/building_placement.mp3", "static"),
     not_enough_minerals = love.audio.newSource("sfx/insufficient_minerals.mp3", "static"),
-    music = love.audio.newSource("sfx/music.mp3")
+    music = love.audio.newSource("sfx/music.mp3"),
+    splosion = love.audio.newSource('sfx/splosion.mp3')
 }
 
 InGameState.assets.ambient_forest:setLooping(true)
 InGameState.assets.ambient_wind:setLooping(true)
 InGameState.assets.music:setLooping(true)
 InGameState.assets.not_enough_minerals:setVolume(0.1)
+InGameState.assets.splosion:setVolume(0.3)
 
 function InGameState:enter(previous, setupFunction, goals)
     self.eventBus = EventBus:new()
@@ -111,7 +113,7 @@ end
 function InGameState:destroyUnderMouse()
     local posx, posy = self:mouseGridPosition()
     if self:destroyAt(posx, posy) then
-        -- todo: play sound
+        InGameState.assets.splosion:play()
         return
     end
     -- todo check for powerlines
