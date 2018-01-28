@@ -62,6 +62,7 @@ function HudBuilding:draw_placement()
     if self.placement == Node then
         local c = 0.5
         love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
+        love.graphics.setLineWidth(1 / 25)
         local max_length = 7 -- see InGameState:dragTarget
         for ox = -max_length, max_length do
             for oy = -max_length, max_length do

@@ -208,6 +208,7 @@ function InGameState:draw()
     self.entities:callAll('drawHud', self.camera)
 
     if self.drag.start and self.drag.stop then
+        love.graphics.setLineWidth(1 / 25)
         love.graphics.line(self.drag.start.x, self.drag.start.y, self.drag.stop.x, self.drag.stop.y)
     end
 
