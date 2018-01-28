@@ -46,6 +46,7 @@ function InGameState:enter(previous, setupFunction, goals)
     self.background = love.graphics.newImage('background.png')
     self.terraformedGrid = TerraformedGrid:new(self.eventBus)
     self.forest_volume = 1
+    self.time_outside = 0
     self.lctrl = false
     self.rctrl = false
 
@@ -223,6 +224,9 @@ function InGameState:draw()
 
     love.graphics.push()
     love.graphics.origin()
+    if self.time_outside > 10 then
+        love.graphics.print("Lost? - Press 'H' to return home", 0, h - 20)
+    end
     --love.graphics.print(tostring(x) .. "|" .. tostring(h - y), 0, 0)
     love.graphics.pop()
 end
@@ -237,6 +241,11 @@ function InGameState:update(dt)
         self.entities:callAll('step', frameTime)
     end
     self:updateAmbient(dt)
+    if self.forest_volume > 0 then
+        self.time_outside = 0
+    else
+        self.time_outside = self.time_outside + dt
+    end
 end
 function InGameState:updateAmbient(dt)
     local p0, p1 = self.camera:boundingBox()
@@ -383,6 +392,9 @@ function InGameState:keypressed(key)
     end
     if key == "q" then
         self.player:decreaseSpeed()
+    end
+    if key == "h" then
+        self.camera.position = {x=0, y=0}
     end
     if key == "rctrl" then
         self.rctrl = true
