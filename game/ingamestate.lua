@@ -246,6 +246,14 @@ function InGameState:mousepressed(x, y, button)
         return
     end
     
+    if button == 3 then
+        self.camera.panning = true
+        local x,y = love.mouse:getPosition();
+        self.camera.initial_mousex = x;
+        self.camera.initial_mousey = y;
+        return
+    end
+
     if button ~= 1 then
         return
     end
@@ -307,6 +315,8 @@ function InGameState:mousereleased()
         self.drag.start = nil
         self.drag.mode = 'off'
     end
+
+    self.camera.panning = false;
 end
 
 function InGameState:connectLine(startTarget, endTarget)

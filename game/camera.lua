@@ -10,6 +10,9 @@ function Camera:initialize()
     self.shakestart = 0
     self.trauma = 0
     self.texts = {}
+    self.panning = false
+    self.initial_mousex = 0;
+    self.initial_mousey = 0;
 end
 
 function Camera:setup()
@@ -47,23 +50,33 @@ end
 
 function Camera:update()
     local dt = love.timer.getDelta()
-    local w = love.graphics:getWidth()
-    local h = love.graphics:getHeight()
     self.zoom = love.graphics.getHeight() / self.gridPerHeight
     local mousex, mousey = love.mouse.getPosition()
-    local BORDER = 50
-    local MOVE_SPEED = 8.0
-    local move_diff = MOVE_SPEED * dt * 25 / self.zoom
-    self.speed = move_diff / dt
+
+    if self.panning then
+        self.position.x = self.position.x - (mousex - self.initial_mousex) / self.zoom;
+        self.position.y = self.position.y + (mousey - self.initial_mousey) / self.zoom;
+        self.initial_mousex = mousex;
+        self.initial_mousey = mousey;
+    end
+
     if self.trauma > 0 then
         self.trauma = math.max(0, self.trauma - dt * 0.5)
         self.shakestart = self.shakestart + dt
     end
 
+    local w = love.graphics:getWidth()
+    local h = love.graphics:getHeight()
+
     if not love.window.getFullscreen() and (mousex <= 0 or mousex >= w-1 or mousey <= 1 or mousey >= h-1 or not love.window.hasFocus()) then
         -- outside of window
         return
     end
+
+    local MOVE_SPEED = 8.0;
+    local move_diff = MOVE_SPEED * dt * 25 / self.zoom
+    self.speed = move_diff / dt
+    local BORDER = 50
 
     if mousex < BORDER then
         self.position.x = self.position.x - move_diff
