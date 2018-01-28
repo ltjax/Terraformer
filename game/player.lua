@@ -21,6 +21,20 @@ function Player:initialize(eventBus, goals)
     self.score = 0
     self.scoreBump = 0.0
     self.goals = goals
+    self.time = 0
+    self.speedUp = 1
+end
+
+function Player:scaleTime(dt)
+    return dt * self.speedUp
+end
+
+function Player:increaseSpeed()
+    self.speedUp = self.speedUp * 2
+end
+
+function Player:decreaseSpeed()
+    self.speedUp = self.speedUp * 0.5
 end
 
 function Player:drawHud()
@@ -38,8 +52,31 @@ function Player:drawHud()
     love.graphics.print(tostring(self.score), x, 10, 0, t, t)
     love.graphics.setFont(constants.NORMAL_FONT)
     love.graphics.print("Hectare", x, 40)
+    self:drawTime()
     love.graphics.pop()
 end
+
+function Player:drawTime()
+    --love.graphics.setBlendMode("alpha")
+    love.graphics.setFont(constants.BIG_FONT)
+    love.graphics.setColor(255, 255, 255, 255)
+    local timeString = string.format("%.1f", self.time)
+    if self.speedUp ~= 1 then
+        formatString = "%s (%.0fx)"
+        if self.speedUp < 1 then
+            formatString = "%s (%.2fx)"
+        end
+        
+        timeString = string.format(formatString, timeString, self.speedUp)
+    end
+    
+    local x = love.graphics.getWidth() / 2 - 100
+    love.graphics.print(timeString, x, 10)
+    
+    love.graphics.setFont(constants.NORMAL_FONT)
+    love.graphics.print("Seconds", x, 40)
+end
+
 
 function Player:update(dt)
     if self.mineralBump > 0 then
@@ -49,6 +86,7 @@ function Player:update(dt)
         self.scoreBump = math.max(0, self.scoreBump - 0.7*dt)
     end
     
+    self.time = self.time + dt
     self:checkGoals()
 end
 
