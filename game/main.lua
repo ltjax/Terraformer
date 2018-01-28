@@ -27,11 +27,14 @@ function clamp(low, n, high)
     return math.min(math.max(low, n), high)
 end
 
+debuggingEnabled = false
+
 function love.load(arg)
 
     -- Enable debugging
     if arg[#arg] == "-debug" then
         require("mobdebug").start()
+        debuggingEnabled = true
     else
         math.randomseed(os.time())
     end

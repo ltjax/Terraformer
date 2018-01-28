@@ -32,10 +32,16 @@ end
 
 function Player:increaseSpeed()
     self.speedUp = self.speedUp * 2
+    if not debuggingEnabled then
+        self.speedUp = math.min(4, self.speedUp)
+    end
 end
 
 function Player:decreaseSpeed()
     self.speedUp = self.speedUp * 0.5
+    if not debuggingEnabled then
+        self.speedUp = math.max(1/4, self.speedUp)
+    end
 end
 
 function Player:drawHud()
