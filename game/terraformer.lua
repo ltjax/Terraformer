@@ -35,15 +35,17 @@ function TerraFormer:initialize(eventBus, posx, posy)
         uniform vec2 windowSize;
         uniform sampler2D perlin;
         uniform sampler2D grass;
-
+        
         vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords )
         {
+            float innerRadius = maxRadius - 5;
             vec2 gridFrag = gl_FragCoord.xy / camZoom + camPosition;
-            vec2 gridVector = gridFrag - gridCenter;
+            vec2 gridVector = (gridFrag - gridCenter);
             vec4 grassColor = Texel(grass, gridFrag / 6.0);
-            vec4 noise = Texel(perlin, vec2(gridFrag * 0.45));
-            float opacity = smoothstep(maxRadius, maxRadius - 8, length(gridVector));
-            return vec4(grassColor.rgb, step(0.5, noise.r * 0.45 + opacity));
+            vec4 noise = Texel(perlin, gridFrag * 0.45);
+        
+            float opacity = (length(gridVector) - innerRadius) / (maxRadius - innerRadius);
+            return vec4(grassColor.rgb, step(opacity, noise.r));
         }
     ]]
  
@@ -81,7 +83,7 @@ function TerraFormer:drawBackground(camera)
     self.shader:send("maxRadius", self.active_radius)
     self.shader:send("perlin", TerraFormer.static.noise_texture)
     self.shader:send("grass", TerraFormer.static.grass_texture)
-    --elf.shader:send("windowSize", {love.graphics.getWidth(), love.graphics.getHeight()})
+    --self.shader:send("windowSize", {love.graphics.getWidth(), love.graphics.getHeight()})
     love.graphics.getBlendMode("alpha")
     love.graphics.setShader(self.shader)
     love.graphics.push()
