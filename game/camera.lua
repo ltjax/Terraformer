@@ -112,6 +112,10 @@ function Camera:boundingBox()
 end
 
 function Camera:wheelmoved(_, y)
+    if self.panning then
+        return
+    end
+
     self.gridPerHeight = clamp(8, self.gridPerHeight - y, 30)
     self.zoom = love.graphics.getHeight() / self.gridPerHeight
 end
