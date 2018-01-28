@@ -2,6 +2,7 @@ local class = require "middleclass"
 local Player = class "Player"
 local messages = require "messages"
 local constants = require 'constants'
+local Gamestate = require 'gamestate'
 
 function Player:initialize(eventBus, goals)
     eventBus:subscribe(messages.MINERALS_PRODUCED, function (message)
@@ -94,8 +95,22 @@ function Player:checkGoals()
     if not self.goals then
         return
     end
+    if self.goals.timeLimit then
+        if self.time > self.goals.timeLimit then
+            Gamestate.switch(require 'failstate')
+        end
+    end
+    if self.goals.hectare then
+        if self.score > self.goals.hectare then
+            Gamestate.switch(require 'winstate')
+        end
+    end
+    if self.goals.minerals then
+        if self.minerals > self.goals.minerals then
+            Gamestate.switch(require 'winstate')
+        end
+    end
 end
-
 
 function Player:has_minerals(num_minerals)
     return num_minerals <= self.minerals
