@@ -171,6 +171,7 @@ function mainMenu:mousepressed(x, y, button)
     for _, button in ipairs(self.buttons) do
         if button:contains(x,y) then
             Gamestate.switch(require "ingamestate", button.setup, button.goals)
+            Gamestate.push(require 'helpstate')
         end
     end
 end

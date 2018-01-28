@@ -414,6 +414,10 @@ function InGameState:keypressed(key)
     if key == "lctrl" then
         self.lctrl = true
     end
+    if key == 'p' then
+        Gamestate.push(require 'helpstate')
+    end
+    
     if key == 'f1' then
         love.window.setFullscreen(not love.window.getFullscreen( ), "desktop")
     end
