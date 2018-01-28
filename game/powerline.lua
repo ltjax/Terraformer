@@ -32,13 +32,18 @@ function Powerline:drawLane(lane, from, to)
 end
 
 function Powerline:draw(camera)
-    local c = math.sin(self.time)
-    c = c * c
+    local c = 0.0
+    
+    if self.a:potential() ~= self.b:potential() then
+        c = math.sin(self.time)
+        c = c * c
+    end
+    
     local p0 = self.a.position
     local p1 = self.b.position
     love.graphics.push()
     love.graphics.setBlendMode("alpha")
-    love.graphics.setColor(150*c+100, 160*c+50, 30*c+10)
+    love.graphics.setColor(90*c+160, 70*c+130, 30*c+50)
     love.graphics.setLineWidth(1/25)
     love.graphics.line(p0.x, p0.y, p1.x, p1.y)
     

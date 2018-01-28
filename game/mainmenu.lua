@@ -38,7 +38,6 @@ function MissionButton:draw()
     love.graphics.printf(self.text, self.x, self.y+5, self.width, 'center')
 end
 
-
 function mainMenu:init()
     self.image = love.graphics.newImage("logo.png")
     
