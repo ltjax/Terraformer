@@ -190,16 +190,18 @@ function InGameState:draw()
 
     -- Draw simple grid
     self.camera:setup()
-    local b0, b1 = self.camera:boundingBox()
-    b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
-    love.graphics.setBlendMode("alpha")
-    local m=200
-    for i=b0.x,b1.x do
-        for j=b0.y,b1.y do
-            love.graphics.setColor(32,32,32, 4)
-            love.graphics.setLineWidth(1 / 25)
-            love.graphics.line(i,b0.y,i,b1.y+1)
-            love.graphics.line(b0.x,j,b1.x+1,j)
+    if self.hud_building:placing() then
+        local b0, b1 = self.camera:boundingBox()
+        b0, b1 = mathhelpers.floor(b0), mathhelpers.floor(b1)
+        love.graphics.setBlendMode("alpha")
+        local m=200
+        for i=b0.x,b1.x do
+            for j=b0.y,b1.y do
+                love.graphics.setColor(32,32,32, 4)
+                love.graphics.setLineWidth(1 / 25)
+                love.graphics.line(i,b0.y,i,b1.y+1)
+                love.graphics.line(b0.x,j,b1.x+1,j)
+            end
         end
     end
 

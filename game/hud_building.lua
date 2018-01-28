@@ -46,10 +46,15 @@ function HudBuilding:drawHud()
         y = y + Y_STEP
     end
     love.graphics.pop()
-    if self.placement then
+    if self:placing() then
         self:draw_placement()
     end
 end
+
+function HudBuilding:placing()
+    return self.placement ~= nil
+end
+
 function HudBuilding:draw_placement()
     local x, y = self.ingamestate:mouseGridPosition()
     love.graphics.push()
