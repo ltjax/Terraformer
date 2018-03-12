@@ -1,5 +1,5 @@
 # Terraformer
-Terraformer is a little game conceived during the Global Game Jam 2018. It puts you on a desolate planet with a few, scarce resources to build on. Take the reigns and turn the wastes surrounding you into a flourishing paradise!
+Terraformer is a little game conceived during the Global Game Jam 2018. It puts you on a desolate planet with a scarce resources to build on. Take the reigns and turn the wastes surrounding you into a flourishing paradise!
 
 # v1
 
